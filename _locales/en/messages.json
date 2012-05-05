@@ -1,0 +1,71 @@
+{
+    "extDescription": {
+        "message": "This extension provides you the script file to collect images on the page you're just watching."
+    },
+    "optCommand": {
+        "message": "Command"
+    },
+    "optCommandTemplate": {
+        "message": "Template"
+    },
+    "optCommandTemplateDescription": {
+        "message": "(You can embed the URL of each image by using the $url.)"
+    },
+    "optCommandTemplateSave": {
+        "message": "Save"
+    },
+    "optCommandTemplateSaveSucceed": {
+        "message": "Succeeded."
+    },
+    "optFilter": {
+        "message": "Filter"
+    },
+    "optFilterExts": {
+        "message": "Extensions"
+    },
+    "optFilterExtsDescription": {
+        "message": "(Please specify the file extension of the image you want to target separated by a space.)"
+    },
+    "optFilterExtsSave": {
+        "message": "Save"
+    },
+    "optFilterExtsSaveSucceed": {
+        "message": "Succeeded."
+    },
+    "optFilterExcepts": {
+        "message": "Excepted patterns"
+    },
+    "optFilterExceptsDescription": {
+        "message": "(Please specify the keywords separated by spaces in the URL you want to exclude.)"
+    },
+    "optFilterExceptsSave": {
+        "message": "Save"
+    },
+    "optFilterExceptsSaveSucceed": {
+        "message": "Succeeded."
+    },
+    "optFilterSize": {
+        "message": "Size"
+    },
+    "optFilterSizeDescription": {
+        "message": "(Please specify the minimum size of the image you want to target.)"
+    },
+    "optFilterSizeWidth": {
+        "message": "Width"
+    },
+    "optFilterSizeHeight": {
+        "message": "Height"
+    },
+    "optFilterSizeSave": {
+        "message": "Save"
+    },
+    "optFilterSizeSaveSucceed": {
+        "message": "Succeeded."
+    },
+    "popupCopied": {
+        "message": "The script was copied to the clipboard."
+    },
+    "popupBtnCopy": {
+        "message": "Copy"
+    }
+}

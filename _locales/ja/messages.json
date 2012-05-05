@@ -1,0 +1,71 @@
+{
+    "extDescription": {
+        "message": "この拡張機能は、あなたが今見ているページにある画像を集めるスクリプトファイルを提供します。"
+    },
+    "optCommand": {
+        "message": "コマンド"
+    },
+    "optCommandTemplate": {
+        "message": "テンプレート"
+    },
+    "optCommandTemplateDescription": {
+        "message": "($urlを使うことで各画像のURLを埋めることができます。)"
+    },
+    "optCommandTemplateSave": {
+        "message": "保存"
+    },
+    "optCommandTemplateSaveSucceed": {
+        "message": "成功しました。"
+    },
+    "optFilter": {
+        "message": "フィルター"
+    },
+    "optFilterExts": {
+        "message": "拡張子"
+    },
+    "optFilterExtsDescription": {
+        "message": "(対象としたい画像ファイルの拡張子を空白区切りで指定してください。)"
+    },
+    "optFilterExtsSave": {
+        "message": "保存"
+    },
+    "optFilterExtsSaveSucceed": {
+        "message": "成功しました。"
+    },
+    "optFilterExcepts": {
+        "message": "除外パターン"
+    },
+    "optFilterExceptsDescription": {
+        "message": "(除外したいURLに含まれるキーワードを空白区切りで指定してください。)"
+    },
+    "optFilterExceptsSave": {
+        "message": "保存"
+    },
+    "optFilterExceptsSaveSucceed": {
+        "message": "成功しました。"
+    },
+    "optFilterSize": {
+        "message": "大きさ"
+    },
+    "optFilterSizeDescription": {
+        "message": "(対象としたい画像の最小サイズを指定してください。)"
+    },
+    "optFilterSizeWidth": {
+        "message": "幅"
+    },
+    "optFilterSizeHeight": {
+        "message": "高さ"
+    },
+    "optFilterSizeSave": {
+        "message": "保存"
+    },
+    "optFilterSizeSaveSucceed": {
+        "message": "成功しました。"
+    },
+    "popupCopied": {
+        "message": "クリップボードにスクリプトをコピーしました。"
+    },
+    "popupBtnCopy": {
+        "message": "コピー"
+    }
+}

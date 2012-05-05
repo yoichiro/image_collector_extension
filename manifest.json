@@ -1,0 +1,21 @@
+{
+    "name": "Image collector extension",
+    "description": "__MSG_extDescription__",
+    "version": "1.0.0",
+    "icons": {
+        "48": "./icon48.png",
+        "128": "./icon128.png"
+    },
+    "background_page": "./background.html",
+    "default_locale": "en",
+    "page_action": {
+        "default_icon": "./icon19.png",
+        "default_popup": "./popup.html"
+    },
+    "options_page": "options.html",
+    "permissions": [
+        "tabs",
+        "http://*/*",
+        "https://*/*"
+    ]
+}
