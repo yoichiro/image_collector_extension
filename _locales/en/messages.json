@@ -62,6 +62,12 @@
     "optFilterSizeSaveSucceed": {
         "message": "Succeeded."
     },
+    "optFilterPriorityLinkHref": {
+        "message": "If the img tag had been surrounded by a tag, the href attribute value of a tag is adopted."
+    },
+    "optFilterPriorityLinkHrefDescription": {
+        "message": "(The thumbnai image can be excluded, if checked.)"
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },

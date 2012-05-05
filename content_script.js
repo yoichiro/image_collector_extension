@@ -14,12 +14,13 @@ CS.prototype = {
         var images = new Array();
         for (var i = 0; i < imgs.length; i++) {
             var imgSrc = imgs[i].src;
-            images.push({
+            var img = {
                 tag: "img",
                 url: imgSrc,
                 width: imgs[i].naturalWidth,
-                height: imgs[i].naturalHeight
-            });
+                height: imgs[i].naturalHeight,
+                hasLink: false
+            };
             var parent = imgs[i].parentNode;
             if (parent.nodeType == Node.ELEMENT_NODE
                 && parent.nodeName.toLowerCase() == "a") {
@@ -31,8 +32,10 @@ CS.prototype = {
                         width: Number.MAX_VALUE,
                         height: Number.MAX_VALUE
                     });
+                    img.hasLink = true;
                 }
             }
+            images.push(img);
         }
         return images;
     },

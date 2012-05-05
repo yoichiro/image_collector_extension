@@ -69,6 +69,9 @@ IC.prototype = {
             if (width < filterSizeWidth) return;
             var height = Number(image.height);
             if (height < filterSizeHeight) return;
+            if (image.tag == "img") {
+                if (this.isPriorityLinkHref() && image.hasLink) return;
+            }
             result.push(url);
         }.bind(this));
         return result;
@@ -112,6 +115,9 @@ IC.prototype = {
         } else {
             return "300";
         }
+    },
+    isPriorityLinkHref: function() {
+        return Boolean(localStorage["priority_link_href"]);
     },
     endsWith: function(source, suffix) {
         var sub = source.length - suffix.length;

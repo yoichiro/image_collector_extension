@@ -62,6 +62,12 @@
     "optFilterSizeSaveSucceed": {
         "message": "成功しました。"
     },
+    "optFilterPriorityLinkHref": {
+        "message": "imgタグがaタグで囲まれていた場合、aタグのhref属性値を採用する。"
+    },
+    "optFilterPriorityLinkHrefDescription": {
+        "message": "(チェックを入れた場合、サムネイル画像を除外することができます。)"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },

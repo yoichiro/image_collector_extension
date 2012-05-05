@@ -27,6 +27,8 @@ Options.prototype = {
         $("optFilterSizeDescription").innerHTML = chrome.i18n.getMessage("optFilterSizeDescription");
         $("optFilterSizeWidth").innerHTML = chrome.i18n.getMessage("optFilterSizeWidth");
         $("optFilterSizeHeight").innerHTML = chrome.i18n.getMessage("optFilterSizeHeight");
+        $("optFilterPriorityLinkHref").innerHTML = chrome.i18n.getMessage("optFilterPriorityLinkHref");
+        $("optFilterPriorityLinkHrefDescription").innerHTML = chrome.i18n.getMessage("optFilterPriorityLinkHrefDescription");
         $("filter_size_save").innerHTML = chrome.i18n.getMessage("optFilterSizeSave");
     },
     assignEventHandlers: function() {
@@ -38,6 +40,8 @@ Options.prototype = {
             this.onClickFilterExceptsSave.bind(this);
         $("filter_size_save").onclick =
             this.onClickFilterSizeSave.bind(this);
+        $("priority_link_href").onclick =
+            this.onClickPriorityLinkHref.bind(this);
     },
     restoreConfigurations: function() {
         $("command_template").value = this.bg.ic.getCommandTemplate();
@@ -45,6 +49,7 @@ Options.prototype = {
         $("filter_excepts").value = this.bg.ic.getFilterExcepts();
         $("filter_size_width").value = this.bg.ic.getFilterSizeWidth();
         $("filter_size_height").value = this.bg.ic.getFilterSizeHeight();
+        $("priority_link_href").checked = this.bg.ic.isPriorityLinkHref();
     },
     onClickCommandTemplateSave: function(evt) {
         localStorage["command_template"] = $("command_template").value;
@@ -84,6 +89,12 @@ Options.prototype = {
         setTimeout(function() {
             $("filter_size_result").innerHTML = "";
         }, 5000);
+    },
+    onClickPriorityLinkHref: function() {
+        this.changeCheckboxConfiguration("priority_link_href");
+    },
+    changeCheckboxConfiguration: function(name) {
+        localStorage[name] = $(name).checked ? "true" : "";
     }
 };
 
