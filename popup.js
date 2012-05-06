@@ -22,9 +22,11 @@ Popup.prototype = {
     },
     onReceiveImageInfo: function(info) {
         this.setImages(info);
-        this.setUrls(info);
+        var script = this.createScript(info);
+        this.setUrls(script);
+        this.setSaveLink(script);
     },
-    setUrls: function(info) {
+    createScript: function(info) {
         var template = this.bg.ic.getCommandTemplate();
         var urls = info.urls;
         var script = "";
@@ -32,6 +34,9 @@ Popup.prototype = {
             var command = template.replace("$url", url);
             script += command + "\n";
         });
+        return script;
+    },
+    setUrls: function(script) {
         $("commands").innerHTML = script;
     },
     setImages: function(info) {
@@ -48,6 +53,16 @@ Popup.prototype = {
             link.appendChild(img);
             images.appendChild(document.createElement("br"));
         }.bind(this));
+    },
+    setSaveLink: function(script) {
+        var blobBuilder = new WebKitBlobBuilder();
+        blobBuilder.append(script);
+        var a = document.createElement("a");
+        a.href = window.webkitURL.createObjectURL(blobBuilder.getBlob());
+        a.target = "_blank";
+        var label = chrome.i18n.getMessage("popupBtnSave");
+        a.appendChild(document.createTextNode(label));
+        $("command_pane").appendChild(a);
     },
     showMessage: function(message) {
         $("message").innerHTML = message;
