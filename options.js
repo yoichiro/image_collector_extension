@@ -30,6 +30,10 @@ Options.prototype = {
         $("optFilterPriorityLinkHref").innerHTML = chrome.i18n.getMessage("optFilterPriorityLinkHref");
         $("optFilterPriorityLinkHrefDescription").innerHTML = chrome.i18n.getMessage("optFilterPriorityLinkHrefDescription");
         $("filter_size_save").innerHTML = chrome.i18n.getMessage("optFilterSizeSave");
+        $("optDownload").innerHTML = chrome.i18n.getMessage("optDownload");
+        $("optDownloadFilename").innerHTML = chrome.i18n.getMessage("optDownloadFilename");
+        $("download_filename_save").innerHTML = chrome.i18n.getMessage("optDownloadFilenameSave");
+        $("optDownloadFilenameDescription").innerHTML = chrome.i18n.getMessage("optDownloadFilenameDescription");
     },
     assignEventHandlers: function() {
         $("command_template_save").onclick =
@@ -42,6 +46,8 @@ Options.prototype = {
             this.onClickFilterSizeSave.bind(this);
         $("priority_link_href").onclick =
             this.onClickPriorityLinkHref.bind(this);
+        $("download_filename_save").onclick =
+            this.onClickDownloadFilenameSave.bind(this);
     },
     restoreConfigurations: function() {
         $("command_template").value = this.bg.ic.getCommandTemplate();
@@ -50,6 +56,7 @@ Options.prototype = {
         $("filter_size_width").value = this.bg.ic.getFilterSizeWidth();
         $("filter_size_height").value = this.bg.ic.getFilterSizeHeight();
         $("priority_link_href").checked = this.bg.ic.isPriorityLinkHref();
+        $("download_filename").value = this.bg.ic.getDownloadFilename();
     },
     onClickCommandTemplateSave: function(evt) {
         localStorage["command_template"] = $("command_template").value;
@@ -92,6 +99,14 @@ Options.prototype = {
     },
     onClickPriorityLinkHref: function() {
         this.changeCheckboxConfiguration("priority_link_href");
+    },
+    onClickDownloadFilenameSave: function(evt) {
+        localStorage["download_filename"] = $("download_filename").value;
+        $("download_filename_result").innerHTML =
+            chrome.i18n.getMessage("optDownloadFilenameSucceed");
+        setTimeout(function() {
+            $("download_filename_result").innerHTML = "";
+        }, 5000);
     },
     changeCheckboxConfiguration: function(name) {
         localStorage[name] = $(name).checked ? "true" : "";

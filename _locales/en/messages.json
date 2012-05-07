@@ -68,6 +68,21 @@
     "optFilterPriorityLinkHrefDescription": {
         "message": "(The thumbnai image can be excluded, if checked.)"
     },
+    "optDownload": {
+        "message": "Download"
+    },
+    "optDownloadFilename": {
+        "message": "Script file name"
+    },
+    "optDownloadFilenameSave": {
+        "message": "Save"
+    },
+    "optDownloadFilenameSucceed": {
+        "message": "Succeeded."
+    },
+    "optDownloadFilenameDescription": {
+        "message": "(You can embed the tab name into the file name using $tabname)"
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },
@@ -76,5 +91,8 @@
     },
     "popupBtnSave": {
         "message": "Save"
+    },
+    "popupSavedFile": {
+        "message": "Saved to download folder."
     }
 }

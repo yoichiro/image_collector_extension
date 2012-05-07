@@ -38,7 +38,7 @@ IC.prototype = {
     },
     getSelectedTabImageInfo: function(callback) {
         chrome.tabs.getSelected(null, function(tab) {
-            callback(this.tabs[tab.id]);
+            callback(this.tabs[tab.id], tab.title);
         }.bind(this));
     },
     filterUrls: function(images) {
@@ -118,6 +118,14 @@ IC.prototype = {
     },
     isPriorityLinkHref: function() {
         return Boolean(localStorage["priority_link_href"]);
+    },
+    getDownloadFilename: function() {
+        var downloadFilename = localStorage["download_filename"];
+        if (downloadFilename) {
+            return downloadFilename;
+        } else {
+            return "";
+        }
     },
     endsWith: function(source, suffix) {
         var sub = source.length - suffix.length;

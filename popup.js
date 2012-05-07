@@ -10,8 +10,8 @@ Popup.prototype = {
         this.assignMessages();
         this.assignEventHandlers();
 
-        this.bg.ic.getSelectedTabImageInfo(function(info) {
-            this.onReceiveImageInfo(info);
+        this.bg.ic.getSelectedTabImageInfo(function(info, title) {
+            this.onReceiveImageInfo(info, title);
         }.bind(this));
     },
     assignMessages: function() {
@@ -20,11 +20,11 @@ Popup.prototype = {
     assignEventHandlers: function() {
         $("btnCopy").onclick = this.onClickCopy.bind(this);
     },
-    onReceiveImageInfo: function(info) {
+    onReceiveImageInfo: function(info, title) {
         this.setImages(info);
         var script = this.createScript(info);
         this.setUrls(script);
-        this.setSaveLink(script);
+        this.setSaveLink(script, title);
     },
     createScript: function(info) {
         var template = this.bg.ic.getCommandTemplate();
@@ -54,12 +54,19 @@ Popup.prototype = {
             images.appendChild(document.createElement("br"));
         }.bind(this));
     },
-    setSaveLink: function(script) {
+    setSaveLink: function(script, title) {
         var blobBuilder = new WebKitBlobBuilder();
         blobBuilder.append(script);
         var a = document.createElement("a");
         a.href = window.webkitURL.createObjectURL(blobBuilder.getBlob());
-        a.target = "_blank";
+        var filename = this.bg.ic.getDownloadFilename();
+        filename = filename.replace("$tabname", title);
+        a.download = filename;
+        a.onclick = function(evt) {
+            var message = chrome.i18n.getMessage("popupSavedFile");
+            this.showMessage(message);
+            return true;
+        }.bind(this);
         var label = chrome.i18n.getMessage("popupBtnSave");
         a.appendChild(document.createTextNode(label));
         $("command_pane").appendChild(a);

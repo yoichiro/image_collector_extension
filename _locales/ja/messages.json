@@ -68,6 +68,21 @@
     "optFilterPriorityLinkHrefDescription": {
         "message": "(チェックを入れた場合、サムネイル画像を除外することができます。)"
     },
+    "optDownload": {
+        "message": "ダウンロード"
+    },
+    "optDownloadFilename": {
+        "message": "スクリプトファイル名"
+    },
+    "optDownloadFilenameSave": {
+        "message": "保存"
+    },
+    "optDownloadFilenameSucceed": {
+        "message": "成功しました。"
+    },
+    "optDownloadFilenameDescription": {
+        "message": "($tabnameを使ってファイル名の中にタブ名を埋めることができます。)"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },
@@ -76,5 +91,8 @@
     },
     "popupBtnSave": {
         "message": "保存"
+    },
+    "popupSavedFile": {
+        "message": "ダウンロードフォルダに保存しました。"
     }
 }
