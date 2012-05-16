@@ -10,30 +10,40 @@ Options.prototype = {
         this.assignMessages();
         this.assignEventHandlers();
         this.restoreConfigurations();
+        this.checkDropboxAuthorized();
     },
     assignMessages: function() {
-        $("optCommand").innerHTML = chrome.i18n.getMessage("optCommand");
-        $("optCommandTemplate").innerHTML = chrome.i18n.getMessage("optCommandTemplate");
-        $("optCommandTemplateDescription").innerHTML = chrome.i18n.getMessage("optCommandTemplateDescription");
-        $("command_template_save").innerHTML = chrome.i18n.getMessage("optCommandTemplateSave");
-        $("optFilter").innerHTML = chrome.i18n.getMessage("optFilter");
-        $("optFilterExts").innerHTML = chrome.i18n.getMessage("optFilterExts");
-        $("optFilterExtsDescription").innerHTML = chrome.i18n.getMessage("optFilterExtsDescription");
-        $("filter_exts_save").innerHTML = chrome.i18n.getMessage("optFilterExtsSave");
-        $("optFilterExcepts").innerHTML = chrome.i18n.getMessage("optFilterExcepts");
-        $("optFilterExceptsDescription").innerHTML = chrome.i18n.getMessage("optFilterExceptsDescription");
-        $("filter_excepts_save").innerHTML = chrome.i18n.getMessage("optFilterExceptsSave");
-        $("optFilterSize").innerHTML = chrome.i18n.getMessage("optFilterSize");
-        $("optFilterSizeDescription").innerHTML = chrome.i18n.getMessage("optFilterSizeDescription");
-        $("optFilterSizeWidth").innerHTML = chrome.i18n.getMessage("optFilterSizeWidth");
-        $("optFilterSizeHeight").innerHTML = chrome.i18n.getMessage("optFilterSizeHeight");
-        $("optFilterPriorityLinkHref").innerHTML = chrome.i18n.getMessage("optFilterPriorityLinkHref");
-        $("optFilterPriorityLinkHrefDescription").innerHTML = chrome.i18n.getMessage("optFilterPriorityLinkHrefDescription");
-        $("filter_size_save").innerHTML = chrome.i18n.getMessage("optFilterSizeSave");
-        $("optDownload").innerHTML = chrome.i18n.getMessage("optDownload");
-        $("optDownloadFilename").innerHTML = chrome.i18n.getMessage("optDownloadFilename");
-        $("download_filename_save").innerHTML = chrome.i18n.getMessage("optDownloadFilenameSave");
-        $("optDownloadFilenameDescription").innerHTML = chrome.i18n.getMessage("optDownloadFilenameDescription");
+        var hash = {
+            "optCommand": "optCommand",
+            "optCommandTemplate": "optCommandTemplate",
+            "optCommandTemplateDescription": "optCommandTemplateDescription",
+            "command_template_save": "optCommandTemplateSave",
+            "optFilter": "optFilter",
+            "optFilterExts": "optFilterExts",
+            "optFilterExtsDescription": "optFilterExtsDescription",
+            "filter_exts_save": "optFilterExtsSave",
+            "optFilterExcepts": "optFilterExcepts",
+            "optFilterExceptsDescription": "optFilterExceptsDescription",
+            "filter_excepts_save": "optFilterExceptsSave",
+            "optFilterSize": "optFilterSize",
+            "optFilterSizeDescription": "optFilterSizeDescription",
+            "optFilterSizeWidth": "optFilterSizeWidth",
+            "optFilterSizeHeight": "optFilterSizeHeight",
+            "optFilterPriorityLinkHref": "optFilterPriorityLinkHref",
+            "optFilterPriorityLinkHrefDescription": "optFilterPriorityLinkHrefDescription",
+            "filter_size_save": "optFilterSizeSave",
+            "optDownload": "optDownload",
+            "optDownloadFilename": "optDownloadFilename",
+            "download_filename_save": "optDownloadFilenameSave",
+            "optDownloadFilenameDescription": "optDownloadFilenameDescription",
+            "optDropbox": "optDropbox",
+            "dropbox_authorized": "optDropboxAuthorized",
+            "dropbox_unauthorized": "optDropboxUnauthorized",
+            "auth_dropbox": "optAuthDropbox",
+            "cancel_dropbox": "optCancelDropbox",
+            "optDropboxDescription": "optDropboxDescription"
+        };
+        utils.setMessageResources(hash);
     },
     assignEventHandlers: function() {
         $("command_template_save").onclick =
@@ -48,6 +58,10 @@ Options.prototype = {
             this.onClickPriorityLinkHref.bind(this);
         $("download_filename_save").onclick =
             this.onClickDownloadFilenameSave.bind(this);
+        $("auth_dropbox").onclick =
+            this.onClickAuthDropbox.bind(this);
+        $("cancel_dropbox").onclick =
+            this.onClickCancelDropbox.bind(this);
     },
     restoreConfigurations: function() {
         $("command_template").value = this.bg.ic.getCommandTemplate();
@@ -57,6 +71,17 @@ Options.prototype = {
         $("filter_size_height").value = this.bg.ic.getFilterSizeHeight();
         $("priority_link_href").checked = this.bg.ic.isPriorityLinkHref();
         $("download_filename").value = this.bg.ic.getDownloadFilename();
+    },
+    checkDropboxAuthorized: function() {
+        this.bg.ic.checkDropboxAuthorized({
+            onSuccess: function(req) {
+                var result = req.responseJSON.result;
+                utils.setVisible($("dropbox_authorized"), result);
+                utils.setVisible($("dropbox_unauthorized"), !result);
+                utils.setVisible($("auth_dropbox"), !result);
+                utils.setVisible($("cancel_dropbox"), result);
+            }.bind(this)
+        });
     },
     onClickCommandTemplateSave: function(evt) {
         localStorage["command_template"] = $("command_template").value;
@@ -110,6 +135,25 @@ Options.prototype = {
     },
     changeCheckboxConfiguration: function(name) {
         localStorage[name] = $(name).checked ? "true" : "";
+    },
+    onClickAuthDropbox: function(evt) {
+        var token = this.bg.ic.getSessionToken();
+        var optionUrl = chrome.extension.getURL("options.html");
+        var url =
+            this.bg.ic.getServerUrl() + "auth_dropbox?"
+            + "token=" + token
+            + "&callback=" + encodeURIComponent(optionUrl);
+        location.href = url;
+    },
+    onClickCancelDropbox: function(evt) {
+        this.bg.ic.cancelDropbox({
+            onSuccess: function(req) {
+                this.checkDropboxAuthorized();
+            }.bind(this),
+            onFailure: function(req) {
+                this.checkDropboxAuthorized();
+            }.bind(this)
+        });
     }
 };
 

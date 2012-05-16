@@ -4,27 +4,48 @@ var Popup = function() {
 
 Popup.prototype = {
     initialize: function() {
+        this.imageInfo = null;
+        this.tabTitle = null;
+	this.tabUrl = null;
         this.bg = chrome.extension.getBackgroundPage();
     },
     start: function() {
         this.assignMessages();
         this.assignEventHandlers();
 
-        this.bg.ic.getSelectedTabImageInfo(function(info, title) {
-            this.onReceiveImageInfo(info, title);
+        this.bg.ic.getSelectedTabImageInfo(function(info, title, url) {
+            this.onReceiveImageInfo(info, title, url);
         }.bind(this));
     },
     assignMessages: function() {
-        $("btnCopy").innerHTML = chrome.i18n.getMessage("popupBtnCopy");
+        var hash = {
+            "btnCopy": "popupBtnCopy",
+            "popupImageCount": "popupImageCount"
+        };
+        utils.setMessageResources(hash);
     },
     assignEventHandlers: function() {
         $("btnCopy").onclick = this.onClickCopy.bind(this);
+        $("btnDropbox").onclick = this.onClickDropbox.bind(this);
+        this.bg.ic.checkDropboxAuthorized({
+            onSuccess: function(req) {
+                var result = req.responseJSON.result;
+                utils.setVisible($("btnDropbox"), result);
+            }.bind(this)
+        });
     },
-    onReceiveImageInfo: function(info, title) {
+    onReceiveImageInfo: function(info, title, url) {
+        this.imageInfo = info;
+        this.tabTitle = title;
+	this.tabUrl = url;
+        this.showInfo(info);
         this.setImages(info);
         var script = this.createScript(info);
         this.setUrls(script);
         this.setSaveLink(script, title);
+    },
+    showInfo: function(info) {
+        $("image_count").innerHTML = info.urls.length;
     },
     createScript: function(info) {
         var template = this.bg.ic.getCommandTemplate();
@@ -85,6 +106,29 @@ Popup.prototype = {
     },
     onClickCopy: function(evt) {
         this.copyToClipboard();
+    },
+    onClickDropbox: function(evt) {
+        Element.setStyle($("btnDropbox"),
+                         {display: "none"});
+        this.bg.ic.saveToDropbox(
+            this.tabTitle,
+	    this.tabUrl,
+            this.imageInfo,
+            {
+                onSuccess: function(req) {
+                    if (req.responseJSON.result) {
+                        this.showMessage(chrome.i18n.getMessage("popupSavedToDropbox"));
+                    } else {
+                        this.showMessage(chrome.i18n.getMessage("popupSavedToDropboxFail"));
+                    }
+                    Element.setStyle($("btnDropbox"),
+                                     {display: "inline-block"});
+                }.bind(this),
+                onFailure: function(req) {
+                    console.log(req);
+                }.bind(this)
+            }
+        );
     }
 };
 

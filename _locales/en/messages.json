@@ -1,6 +1,6 @@
 {
     "extDescription": {
-        "message": "This extension provides you the script file to collect images on the page you're just watching."
+        "message": "This extension provides you to retrieve the script file to collect images on the page you're just watching and to upload them to Dropbox directly and quickly."
     },
     "optCommand": {
         "message": "Command"
@@ -83,6 +83,24 @@
     "optDownloadFilenameDescription": {
         "message": "(You can embed the tab name into the file name using $tabname)"
     },
+    "optDropbox": {
+        "message": "Dropbox"
+    },
+    "optDropboxAuthorized": {
+        "message": "Authorized."
+    },
+    "optDropboxUnauthorized": {
+        "message": "Unauthorized."
+    },
+    "optAuthDropbox": {
+        "message": "Connect"
+    },
+    "optCancelDropbox": {
+        "message": "Disconnect"
+    },
+    "optDropboxDescription": {
+        "message": "(Notice: Images which had been uploaded may be published anonymously.)"
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },
@@ -94,5 +112,11 @@
     },
     "popupSavedFile": {
         "message": "Saved to download folder."
+    },
+    "popupSavedToDropboxFail": {
+        "message": "The reservation of the registeration task failed."
+    },
+    "popupImageCount": {
+        "message": "Image count"
     }
 }

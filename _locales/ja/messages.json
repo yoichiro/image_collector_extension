@@ -1,6 +1,6 @@
 {
     "extDescription": {
-        "message": "この拡張機能は、あなたが今見ているページにある画像を集めるスクリプトファイルを提供します。"
+        "message": "この拡張機能は、あなたが今見ているページにある画像を集めるスクリプトファイルを提供し、さらに画像をDropboxに直接かつ迅速にアップロードする機能を提供します。"
     },
     "optCommand": {
         "message": "コマンド"
@@ -83,6 +83,24 @@
     "optDownloadFilenameDescription": {
         "message": "($tabnameを使ってファイル名の中にタブ名を埋めることができます。)"
     },
+    "optDropbox": {
+        "message": "Dropbox"
+    },
+    "optDropboxAuthorized": {
+        "message": "認可されています。"
+    },
+    "optDropboxUnauthorized": {
+        "message": "認可されていません。"
+    },
+    "optAuthDropbox": {
+        "message": "接続"
+    },
+    "optCancelDropbox": {
+        "message": "解除"
+    },
+    "optDropboxDescription": {
+        "message": "(注意: アップロードされた画像は、匿名で公開される可能性があります。)"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },
@@ -94,5 +112,14 @@
     },
     "popupSavedFile": {
         "message": "ダウンロードフォルダに保存しました。"
+    },
+    "popupSavedToDropbox": {
+        "message": "登録タスクが予約されました。"
+    },
+    "popupSavedToDropboxFail": {
+        "message": "登録タスクの予約に失敗しました。"
+    },
+    "popupImageCount": {
+        "message": "画像数"
     }
 }

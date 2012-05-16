@@ -2,10 +2,16 @@ var IC = function() {
     this.initialize();
 };
 
+IC.SERVER_URL = "http://ics.eisbahn.jp/";
+
 IC.prototype = {
     initialize: function() {
         this.tabs = {};
         this.setupEventHandler();
+        this.establishSession();
+    },
+    getServerUrl: function() {
+        return IC.SERVER_URL;
     },
     setupEventHandler: function() {
         chrome.tabs.onSelectionChanged.addListener(function(id, info) {
@@ -19,6 +25,34 @@ IC.prototype = {
                 this.onRequest(message, sender.tab, sendRequest);
             }.bind(this)
         );
+    },
+    establishSession: function() {
+        var url = IC.SERVER_URL + "ajax/create_session";
+        var token = this.getSessionToken();
+        var params = {
+            has_token: token != undefined
+        };
+        if (token) {
+            params.token = token;
+        }
+        new Ajax.Request(url, {
+            method: "post",
+            parameters: params,
+            onSuccess: function(req) {
+                this.onReceiveEstablishSession(req);
+            }.bind(this),
+            onFailure: function(req) {
+                console.log(req);
+            }.bind(this)
+        });
+    },
+    onReceiveEstablishSession: function(req) {
+        var result = req.responseJSON.result;
+        var token = result.token;
+        localStorage["session_token"] = token;
+    },
+    getSessionToken: function() {
+        return localStorage["session_token"];
     },
     onRequest: function(message, tab, sendRequest) {
         var urls = this.filterUrls(message.images);
@@ -38,7 +72,7 @@ IC.prototype = {
     },
     getSelectedTabImageInfo: function(callback) {
         chrome.tabs.getSelected(null, function(tab) {
-            callback(this.tabs[tab.id], tab.title);
+            callback(this.tabs[tab.id], tab.title, tab.url);
         }.bind(this));
     },
     filterUrls: function(images) {
@@ -77,59 +111,78 @@ IC.prototype = {
         return result;
     },
     getCommandTemplate: function() {
-        var template = localStorage["command_template"];
-        if (template) {
-            return template;
-        } else {
-            return "curl -O -L $url";
-        }
+        return utils.getOptionValue("command_template", "curl -O -L $url");
     },
     getFilterExts: function() {
-        var filterExts = localStorage["filter_exts"];
-        if (filterExts) {
-            return filterExts;
-        } else {
-            return "jpeg jpg";
-        }
+        return utils.getOptionValue("filter_exts", "jpeg jpg");
     },
     getFilterExcepts: function() {
-        var filterExcepts = localStorage["filter_excepts"];
-        if (filterExcepts) {
-            return filterExcepts;
-        } else {
-            return "amazon";
-        }
+        return utils.getOptionValue("filter_excepts", "amazon");
     },
     getFilterSizeWidth: function() {
-        var filterSizeWidth = localStorage["filter_size_width"];
-        if (filterSizeWidth) {
-            return filterSizeWidth;
-        } else {
-            return "300";
-        }
+        return utils.getOptionValue("filter_size_width", "300");
     },
     getFilterSizeHeight: function() {
-        var filterSizeHeight = localStorage["filter_size_height"];
-        if (filterSizeHeight) {
-            return filterSizeHeight;
-        } else {
-            return "300";
-        }
+        return utils.getOptionValue("filter_size_height", "300");
     },
     isPriorityLinkHref: function() {
         return Boolean(localStorage["priority_link_href"]);
     },
     getDownloadFilename: function() {
-        var downloadFilename = localStorage["download_filename"];
-        if (downloadFilename) {
-            return downloadFilename;
-        } else {
-            return "";
-        }
+        return utils.getOptionValue("download_filename", "");
     },
     endsWith: function(source, suffix) {
         var sub = source.length - suffix.length;
         return (sub >= 0) && (source.lastIndexOf(suffix) === sub);
+    },
+    checkDropboxAuthorized: function(callbacks) {
+        var token = this.getSessionToken();
+        var url = IC.SERVER_URL + "ajax/is_valid_dropbox";
+        new Ajax.Request(url, {
+            method: "post",
+            parameters: {
+                token: token
+            },
+            onSuccess: function(req) {
+                callbacks.onSuccess(req);
+            }.bind(this),
+            onFailure: function(req) {
+                console.log(req);
+            }.bind(this)
+        });
+    },
+    saveToDropbox: function(title, pageUrl, imageInfo, callbacks) {
+        var url = IC.SERVER_URL + "ajax/save_to_dropbox";
+        new Ajax.Request(url, {
+            method: "post",
+            parameters: {
+                token: this.getSessionToken(),
+                title: title,
+                page_url: pageUrl,
+                urls: imageInfo.urls.join(" ")
+            },
+            onSuccess: function(req) {
+                callbacks.onSuccess(req);
+            }.bind(this),
+            onFailure: function(req) {
+                callbacks.onFailure(req);
+            }.bind(this)
+        });
+    },
+    cancelDropbox: function(callbacks) {
+        var url = IC.SERVER_URL + "ajax/cancel_dropbox";
+        new Ajax.Request(url, {
+            method: "post",
+            parameters: {
+                token: this.getSessionToken()
+            },
+            onSuccess: function(req) {
+                callbacks.onSuccess(req);
+            }.bind(this),
+            onFailure: function(req) {
+                callbacks.onFailure(req);
+            }.bind(this)
+        });
     }
 };
 

@@ -4,6 +4,7 @@
   <title>Image Collector extension</title>
   <link rel="stylesheet" type="text/css" href="./options.css" />
   <script type="text/javascript" src="./prototype.js"></script>
+  <script type="text/javascript" src="./utils.js"></script>
   <script type="text/javascript" src="./options.js"></script>
 </head>
 
@@ -15,21 +16,6 @@
   <img src="./icon128.png" />
   <div class="title">Image Collector extension</div>
   <br style="clear: both;" />
-</div>
-
-<div class="section_pane">
-  <div class="section_title"><span id="optCommand"></span></div>
-  <table>
-    <tr>
-      <td>
-        <span id="optCommandTemplate"></span>:
-        <input type="text" id="command_template" size="50" />
-        <button id="command_template_save"></button>
-        <span id="command_template_result"></span><br />
-        <div class="description" id="optCommandTemplateDescription"></div>
-      </td>
-    </tr>
-  </table>
 </div>
 
 <div class="section_pane">
@@ -96,6 +82,21 @@
 </div>
 
 <div class="section_pane">
+  <div class="section_title"><span id="optCommand"></span></div>
+  <table>
+    <tr>
+      <td>
+        <span id="optCommandTemplate"></span>:
+        <input type="text" id="command_template" size="50" />
+        <button id="command_template_save"></button>
+        <span id="command_template_result"></span><br />
+        <div class="description" id="optCommandTemplateDescription"></div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="section_pane">
   <div class="section_title"><span id="optDownload"></span></div>
   <table>
     <tr>
@@ -105,6 +106,21 @@
         <button id="download_filename_save"></button>
         <span id="download_filename_result"></span><br />
         <div class="description" id="optDownloadFilenameDescription"></div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="section_pane">
+  <div class="section_title"><span id="optDropbox"></span></div>
+  <table>
+    <tr>
+      <td>
+        <div id="dropbox_authorized"></div>
+        <div id="dropbox_unauthorized"></div>
+        <button id="auth_dropbox"></button>
+        <button id="cancel_dropbox"></button><br />
+        <div class="description" id="optDropboxDescription"></div>
       </td>
     </tr>
   </table>

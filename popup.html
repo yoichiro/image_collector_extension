@@ -3,12 +3,17 @@
 <head>
 <link rel="stylesheet" type="text/css" href="./popup.css" />
 <script type="text/javascript" src="./prototype.js"></script>
+<script type="text/javascript" src="./utils.js"></script>
 <script type="text/javascript" src="./popup.js"></script>
 </head>
 
 <body onload="popup.start();">
 
 <script type="text/javascript" src="./analytics.js"></script>
+
+<div class="info_pane">
+  <span id="popupImageCount"></span>: <span id="image_count"></span>
+</div>
 
 <div class="command_pane">
   <textarea id="commands" readonly>
@@ -20,6 +25,9 @@
 
 <div class="image_pane">
   <div id="images"></div>
+  <div id="function_pane">
+    <a href="#" id="btnDropbox">Dropbox</a>
+  </div>
 </div>
 
 <div id="message">
