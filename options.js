@@ -40,8 +40,7 @@ Options.prototype = {
             "dropbox_authorized": "optDropboxAuthorized",
             "dropbox_unauthorized": "optDropboxUnauthorized",
             "auth_dropbox": "optAuthDropbox",
-            "cancel_dropbox": "optCancelDropbox",
-            "optDropboxDescription": "optDropboxDescription"
+            "cancel_dropbox": "optCancelDropbox"
         };
         utils.setMessageResources(hash);
     },

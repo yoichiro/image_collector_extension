@@ -98,9 +98,6 @@
     "optCancelDropbox": {
         "message": "解除"
     },
-    "optDropboxDescription": {
-        "message": "(注意: アップロードされた画像は、匿名で公開される可能性があります。)"
-    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },

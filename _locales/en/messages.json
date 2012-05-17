@@ -98,9 +98,6 @@
     "optCancelDropbox": {
         "message": "Disconnect"
     },
-    "optDropboxDescription": {
-        "message": "(Notice: Images which had been uploaded may be published anonymously.)"
-    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },
