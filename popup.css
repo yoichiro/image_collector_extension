@@ -68,3 +68,12 @@ div.info_pane {
     font-size: 12px;
     height: 20px;
 }
+
+div.info_pane div {
+    float: left;
+}
+
+div.info_pane img {
+    float: right;
+    cursor: pointer;
+}

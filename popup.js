@@ -33,6 +33,15 @@ Popup.prototype = {
                 utils.setVisible($("btnDropbox"), result);
             }.bind(this)
         });
+        $("btnOption").onclick = this.onClickOption.bind(this);
+    },
+    onClickOption: function(evt) {
+        var url = chrome.extension.getURL("options.html");
+        chrome.tabs.create({
+            url: url
+        }, function(tab) {
+            window.close();
+        }.bind(this));
     },
     onReceiveImageInfo: function(info, title, url) {
         this.imageInfo = info;

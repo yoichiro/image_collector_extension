@@ -110,10 +110,13 @@
     "popupSavedFile": {
         "message": "Saved to download folder."
     },
+    "popupSavedToDropbox": {
+        "message": "Registered the reservation task."
+    },
     "popupSavedToDropboxFail": {
         "message": "The reservation of the registeration task failed."
     },
     "popupImageCount": {
-        "message": "Image count"
+        "message": "Image count:"
     }
 }
