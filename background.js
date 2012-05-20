@@ -2,7 +2,8 @@ var IC = function() {
     this.initialize();
 };
 
-IC.SERVER_URL = "http://ics.eisbahn.jp/";
+// IC.SERVER_URL = "http://ics.eisbahn.jp/";
+IC.SERVER_URL = "http://localhost:3000/";
 
 IC.prototype = {
     initialize: function() {
