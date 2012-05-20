@@ -6,7 +6,7 @@ Popup.prototype = {
     initialize: function() {
         this.imageInfo = null;
         this.tabTitle = null;
-	this.tabUrl = null;
+        this.tabUrl = null;
         this.bg = chrome.extension.getBackgroundPage();
     },
     start: function() {
@@ -26,11 +26,18 @@ Popup.prototype = {
     },
     assignEventHandlers: function() {
         $("btnCopy").onclick = this.onClickCopy.bind(this);
-        $("btnDropbox").onclick = this.onClickDropbox.bind(this);
+        $("btn_dropbox").onclick = this.onClickDropbox.bind(this);
+        $("btn_gdrive").onclick = this.onClickGDrive.bind(this);
         this.bg.ic.checkDropboxAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
-                utils.setVisible($("btnDropbox"), result);
+                utils.setVisible($("btn_dropbox"), result);
+            }.bind(this)
+        });
+        this.bg.ic.checkGDriveAuthorized({
+            onSuccess: function(req) {
+                var result = req.responseJSON.result;
+                utils.setVisible($("btn_gdrive"), result);
             }.bind(this)
         });
         $("btnOption").onclick = this.onClickOption.bind(this);
@@ -46,7 +53,7 @@ Popup.prototype = {
     onReceiveImageInfo: function(info, title, url) {
         this.imageInfo = info;
         this.tabTitle = title;
-	this.tabUrl = url;
+        this.tabUrl = url;
         this.showInfo(info);
         this.setImages(info);
         var script = this.createScript(info);
@@ -117,11 +124,11 @@ Popup.prototype = {
         this.copyToClipboard();
     },
     onClickDropbox: function(evt) {
-        Element.setStyle($("btnDropbox"),
+        Element.setStyle($("btn_dropbox"),
                          {display: "none"});
         this.bg.ic.saveToDropbox(
             this.tabTitle,
-	    this.tabUrl,
+            this.tabUrl,
             this.imageInfo,
             {
                 onSuccess: function(req) {
@@ -130,7 +137,30 @@ Popup.prototype = {
                     } else {
                         this.showMessage(chrome.i18n.getMessage("popupSavedToDropboxFail"));
                     }
-                    Element.setStyle($("btnDropbox"),
+                    Element.setStyle($("btn_dropbox"),
+                                     {display: "inline-block"});
+                }.bind(this),
+                onFailure: function(req) {
+                    console.log(req);
+                }.bind(this)
+            }
+        );
+    },
+    onClickGDrive: function(evt) {
+        Element.setStyle($("btn_gdrive"),
+                         {display: "none"});
+        this.bg.ic.saveToGDrive(
+            this.tabTitle,
+            this.tabUrl,
+            this.imageInfo,
+            {
+                onSuccess: function(req) {
+                    if (req.responseJSON.result) {
+                        this.showMessage(chrome.i18n.getMessage("popupSavedToGDrive"));
+                    } else {
+                        this.showMessage(chrome.i18n.getMessage("popupSavedToGDriveFail"));
+                    }
+                    Element.setStyle($("btn_gdrive"),
                                      {display: "inline-block"});
                 }.bind(this),
                 onFailure: function(req) {

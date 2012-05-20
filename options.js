@@ -11,6 +11,7 @@ Options.prototype = {
         this.assignEventHandlers();
         this.restoreConfigurations();
         this.checkDropboxAuthorized();
+        this.checkGDriveAuthorized();
     },
     assignMessages: function() {
         var hash = {
@@ -36,11 +37,15 @@ Options.prototype = {
             "optDownloadFilename": "optDownloadFilename",
             "download_filename_save": "optDownloadFilenameSave",
             "optDownloadFilenameDescription": "optDownloadFilenameDescription",
-            "optDropbox": "optDropbox",
+            "optServices": "optServices",
             "dropbox_authorized": "optDropboxAuthorized",
             "dropbox_unauthorized": "optDropboxUnauthorized",
             "auth_dropbox": "optAuthDropbox",
-            "cancel_dropbox": "optCancelDropbox"
+            "cancel_dropbox": "optCancelDropbox",
+            "gdrive_authorized": "optGDriveAuthorized",
+            "gdrive_unauthorized": "optGDriveUnauthorized",
+            "auth_gdrive": "optAuthGDrive",
+            "cancel_gdrive": "optCancelGDrive"
         };
         utils.setMessageResources(hash);
     },
@@ -61,6 +66,10 @@ Options.prototype = {
             this.onClickAuthDropbox.bind(this);
         $("cancel_dropbox").onclick =
             this.onClickCancelDropbox.bind(this);
+        $("auth_gdrive").onclick =
+            this.onClickAuthGDrive.bind(this);
+        $("cancel_gdrive").onclick =
+            this.onClickCancelGDrive.bind(this);
     },
     restoreConfigurations: function() {
         $("command_template").value = this.bg.ic.getCommandTemplate();
@@ -79,6 +88,17 @@ Options.prototype = {
                 utils.setVisible($("dropbox_unauthorized"), !result);
                 utils.setVisible($("auth_dropbox"), !result);
                 utils.setVisible($("cancel_dropbox"), result);
+            }.bind(this)
+        });
+    },
+    checkGDriveAuthorized: function() {
+        this.bg.ic.checkGDriveAuthorized({
+            onSuccess: function(req) {
+                var result = req.responseJSON.result;
+                utils.setVisible($("gdrive_authorized"), result);
+                utils.setVisible($("gdrive_unauthorized"), !result);
+                utils.setVisible($("auth_gdrive"), !result);
+                utils.setVisible($("cancel_gdrive"), result);
             }.bind(this)
         });
     },
@@ -153,6 +173,25 @@ Options.prototype = {
                 this.checkDropboxAuthorized();
             }.bind(this)
         });
+    },
+    onClickCancelGDrive: function(evt) {
+        this.bg.ic.cancelGDrive({
+            onSuccess: function(req) {
+                this.checkGDriveAuthorized();
+            }.bind(this),
+            onFailure: function(req) {
+                this.checkGDriveAuthorized();
+            }.bind(this)
+        });
+    },
+    onClickAuthGDrive: function(evt) {
+        var token = this.bg.ic.getSessionToken();
+        var optionUrl = chrome.extension.getURL("options.html");
+        var url =
+            this.bg.ic.getServerUrl() + "auth_gdrive?"
+            + "token=" + token
+            + "&callback=" + encodeURIComponent(optionUrl);
+        location.href = url;
     }
 };
 

@@ -52,3 +52,7 @@ div.description {
     margin-left: 10px;
     font-style: italic;
 }
+
+td.icon_col {
+    width: 18px;
+}

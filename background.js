@@ -2,7 +2,8 @@ var IC = function() {
     this.initialize();
 };
 
-IC.SERVER_URL = "http://ics.eisbahn.jp/";
+// IC.SERVER_URL = "http://ics.eisbahn.jp/";
+IC.SERVER_URL = "http://localhost:3000/";
 
 IC.prototype = {
     initialize: function() {
@@ -136,8 +137,14 @@ IC.prototype = {
         return (sub >= 0) && (source.lastIndexOf(suffix) === sub);
     },
     checkDropboxAuthorized: function(callbacks) {
+        this.checkServiceAuthorized("dropbox", callbacks);
+    },
+    checkGDriveAuthorized: function(callbacks) {
+        this.checkServiceAuthorized("gdrive", callbacks);
+    },
+    checkServiceAuthorized: function(name, callbacks) {
         var token = this.getSessionToken();
-        var url = IC.SERVER_URL + "ajax/is_valid_dropbox";
+        var url = IC.SERVER_URL + "ajax/is_valid_" + name;
         new Ajax.Request(url, {
             method: "post",
             parameters: {
@@ -152,7 +159,13 @@ IC.prototype = {
         });
     },
     saveToDropbox: function(title, pageUrl, imageInfo, callbacks) {
-        var url = IC.SERVER_URL + "ajax/save_to_dropbox";
+        this.saveToService("dropbox", title, pageUrl, imageInfo, callbacks);
+    },
+    saveToGDrive: function(title, pageUrl, imageInfo, callbacks) {
+        this.saveToService("gdrive", title, pageUrl, imageInfo, callbacks);
+    },
+    saveToService: function(name, title, pageUrl, imageInfo, callbacks) {
+        var url = IC.SERVER_URL + "ajax/save_to_" + name;
         new Ajax.Request(url, {
             method: "post",
             parameters: {
@@ -170,7 +183,13 @@ IC.prototype = {
         });
     },
     cancelDropbox: function(callbacks) {
-        var url = IC.SERVER_URL + "ajax/cancel_dropbox";
+        this.cancelService("dropbox", callbacks);
+    },
+    cancelGDrive: function(callbacks) {
+        this.cancelService("gdrive", callbacks);
+    },
+    cancelService: function(name, callbacks) {
+        var url = IC.SERVER_URL + "ajax/cancel_" + name;
         new Ajax.Request(url, {
             method: "post",
             parameters: {
