@@ -36,7 +36,7 @@ Options.prototype = {
             "optDownloadFilename": "optDownloadFilename",
             "download_filename_save": "optDownloadFilenameSave",
             "optDownloadFilenameDescription": "optDownloadFilenameDescription",
-            "optDropbox": "optDropbox",
+            "optServices": "optServices",
             "dropbox_authorized": "optDropboxAuthorized",
             "dropbox_unauthorized": "optDropboxUnauthorized",
             "auth_dropbox": "optAuthDropbox",

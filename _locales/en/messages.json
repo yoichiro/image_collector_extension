@@ -83,8 +83,8 @@
     "optDownloadFilenameDescription": {
         "message": "(You can embed the tab name into the file name using $tabname)"
     },
-    "optDropbox": {
-        "message": "Dropbox"
+    "optServices": {
+        "message": "Services"
     },
     "optDropboxAuthorized": {
         "message": "Authorized."

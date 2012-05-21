@@ -42,6 +42,10 @@ td {
     white-space: nowrap;
 }
 
+td.icon {
+    width: 20px;
+}
+
 td.checkbox_col {
     width: 25px;
 }

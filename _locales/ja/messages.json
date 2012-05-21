@@ -83,8 +83,8 @@
     "optDownloadFilenameDescription": {
         "message": "($tabnameを使ってファイル名の中にタブ名を埋めることができます。)"
     },
-    "optDropbox": {
-        "message": "Dropbox"
+    "optServices": {
+        "message": "サービス"
     },
     "optDropboxAuthorized": {
         "message": "認可されています。"
