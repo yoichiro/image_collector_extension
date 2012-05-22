@@ -2,30 +2,47 @@ body {
     width: 400px;
     height: 320px;
     font-family: "Verdana","Arial",sans-serif;
+    font-size: 14px;
+}
+
+div.left_pane {
+    float: left;
+}
+
+div.right_pane {
+    float: right;
 }
 
 div.command_pane {
     position: relative;
     width: 195px;
+    margin-top: 20px;
+}
+
+div.pane_header div {
+    margin-bottom: 3px;
+    margin-left: 3px;
+    float: left;
+}
+
+div.pane_header img {
     float: left;
 }
 
 #commands {
     width: 100%;
-    height: 265px;
-    margin-bottom: 5px;
+    height: 188px;
     resize: none;
 }
 
 div.image_pane {
     position: relative;
     width: 195px;
-    float: right;
 }
 
 #images {
     width: 100%;
-    height: 263px;
+    height: 283px;
     margin-bottom: 5px;
     overflow: auto;
     border: 1px solid gray;
@@ -59,9 +76,8 @@ div.copyright {
 }
 
 #function_pane {
-    text-align: right;
-    width: 195px;
     font-size: 12px;
+    margin-left: 30px;
 }
 
 div.info_pane {

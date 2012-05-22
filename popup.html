@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <html>
 
 <head>
@@ -17,18 +19,35 @@
   <img src="./option.png" id="btnOption" title="Option" />
 </div>
 
-<div class="command_pane">
-  <textarea id="commands" readonly>
-  </textarea>
-  <div id="command_pane">
-    <a href="#" id="btnCopy"></a>
+<div class="left_pane">
+  <div class="image_pane">
+    <div id="images"></div>
   </div>
 </div>
 
-<div class="image_pane">
-  <div id="images"></div>
-  <div id="function_pane">
-    <a href="#" id="btnDropbox">Dropbox</a>
+<div class="right_pane">
+  <div class="dropbox_pane">
+    <div class="pane_header">
+      <img src="./dropbox.png" />
+      <div>Dropbox</div>
+      <br style="clear: both" />
+    </div>
+    <div id="function_pane">
+      <a href="#" id="btnDropbox">Dropbox</a>
+      <a href="#" id="btnAuthDropbox"></a>
+      <br style="clear: both" />
+    </div>
+  </div>
+  <div class="command_pane">
+    <div class="pane_header">
+      <img src="./script.png" />
+      <div>Script file</div>
+    </div>
+    <textarea id="commands" readonly>
+    </textarea>
+    <div id="command_pane">
+      <a href="#" id="btnCopy"></a>
+    </div>
   </div>
 </div>
 

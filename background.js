@@ -184,6 +184,15 @@ IC.prototype = {
                 callbacks.onFailure(req);
             }.bind(this)
         });
+    },
+    getDropboxAuthUrl: function() {
+        var token = this.getSessionToken();
+        var optionUrl = chrome.extension.getURL("options.html");
+        var url =
+            this.getServerUrl() + "auth_dropbox?"
+            + "token=" + token
+            + "&callback=" + encodeURIComponent(optionUrl);
+	return url;
     }
 };
 

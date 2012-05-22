@@ -118,5 +118,11 @@
     },
     "popupImageCount": {
         "message": "画像数:"
+    },
+    "popupBtnDropbox": {
+        "message": "アップロードする"
+    },
+    "popupBtnAuthDropbox": {
+        "message": "Dropboxに接続する"
     }
 }

@@ -118,5 +118,11 @@
     },
     "popupImageCount": {
         "message": "Image count:"
+    },
+    "popupBtnDropbox": {
+        "message": "Upload images"
+    },
+    "popupBtnAuthDropbox": {
+        "message": "Connect to Dropbox"
     }
 }

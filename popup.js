@@ -20,17 +20,21 @@ Popup.prototype = {
     assignMessages: function() {
         var hash = {
             "btnCopy": "popupBtnCopy",
-            "popupImageCount": "popupImageCount"
+            "popupImageCount": "popupImageCount",
+	    "btnDropbox": "popupBtnDropbox",
+	    "btnAuthDropbox": "popupBtnAuthDropbox"
         };
         utils.setMessageResources(hash);
     },
     assignEventHandlers: function() {
         $("btnCopy").onclick = this.onClickCopy.bind(this);
         $("btnDropbox").onclick = this.onClickDropbox.bind(this);
+        $("btnAuthDropbox").onclick = this.onClickAuthDropbox.bind(this);
         this.bg.ic.checkDropboxAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
                 utils.setVisible($("btnDropbox"), result);
+		utils.setVisible($("btnAuthDropbox"), !result);
             }.bind(this)
         });
         $("btnOption").onclick = this.onClickOption.bind(this);
@@ -138,6 +142,13 @@ Popup.prototype = {
                 }.bind(this)
             }
         );
+    },
+    onClickAuthDropbox: function(evt) {
+        var url = this.bg.ic.getDropboxAuthUrl();
+	chrome.tabs.create({
+	    url: url,
+	    selected: true
+	});
     }
 };
 
