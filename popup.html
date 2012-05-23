@@ -19,40 +19,42 @@
   <img src="./option.png" id="btnOption" title="Option" />
 </div>
 
-<div class="left_pane">
-  <div class="image_pane">
-    <div id="images"></div>
-  </div>
-</div>
+<table>
+  <tr>
+    <td>
+      <div class="image_pane">
+        <div id="images"></div>
+      </div>
+    </td>
+    <td>
+      <div class="dropbox_pane">
+        <div class="pane_header">
+          <img src="./dropbox.png" />
+          <div>Dropbox</div>
+          <br style="clear: both" />
+        </div>
+        <div id="function_pane">
+          <a href="#" id="btnDropbox">Dropbox</a>
+          <a href="#" id="btnAuthDropbox"></a>
+          <br style="clear: both" />
+        </div>
+      </div>
+      <div class="command_pane">
+        <div class="pane_header">
+          <img src="./script.png" />
+          <div>Script file</div>
+        </div>
+        <textarea id="commands" readonly>
+        </textarea>
+        <div id="command_pane">
+          <a href="#" id="btnCopy"></a>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
 
-<div class="right_pane">
-  <div class="dropbox_pane">
-    <div class="pane_header">
-      <img src="./dropbox.png" />
-      <div>Dropbox</div>
-      <br style="clear: both" />
-    </div>
-    <div id="function_pane">
-      <a href="#" id="btnDropbox">Dropbox</a>
-      <a href="#" id="btnAuthDropbox"></a>
-      <br style="clear: both" />
-    </div>
-  </div>
-  <div class="command_pane">
-    <div class="pane_header">
-      <img src="./script.png" />
-      <div>Script file</div>
-    </div>
-    <textarea id="commands" readonly>
-    </textarea>
-    <div id="command_pane">
-      <a href="#" id="btnCopy"></a>
-    </div>
-  </div>
-</div>
-
-<div id="message">
-</div>
+<div id="message"></div>
 
 <div class="copyright">
   (C) 2012 <a href="http://www.eisbahn.jp/yoichiro/en" target="_blank">Yoichiro Tanaka</a>

@@ -1,6 +1,6 @@
 body {
     width: 400px;
-    height: 320px;
+    height: 330px;
     font-family: "Verdana","Arial",sans-serif;
     font-size: 14px;
 }
@@ -10,13 +10,14 @@ div.left_pane {
 }
 
 div.right_pane {
-    float: right;
+    float: left;
 }
 
 div.command_pane {
     position: relative;
     width: 195px;
     margin-top: 20px;
+    margin-left: 2px;
 }
 
 div.pane_header div {
@@ -48,8 +49,9 @@ div.image_pane {
     border: 1px solid gray;
 }
 
-#images img {
-    margin: 5px;
+#images img.content {
+    margin-top: 5px;
+    margin-left: 5px;
     width: 165px;
 }
 
@@ -92,4 +94,20 @@ div.info_pane div {
 div.info_pane img {
     float: right;
     cursor: pointer;
+}
+
+div.dropbox_pane {
+    margin-left: 2px;
+}
+
+div.image_function {
+    text-align: right;
+    width: 165px;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+div.image_function img {
+    cursor: pointer;
+    margin-left: 3px;
 }
