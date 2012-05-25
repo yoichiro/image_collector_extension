@@ -1,6 +1,6 @@
 {
     "extDescription": {
-        "message": "This extension provides you to retrieve the script file to collect images on the page you're just watching and to upload them to Dropbox directly and quickly."
+        "message": "This extension provides you to retrieve the script file to collect images on the page you're just watching and to upload them to Dropbox or Google Drive directly and quickly."
     },
     "optCommand": {
         "message": "Command"
@@ -98,6 +98,18 @@
     "optCancelDropbox": {
         "message": "Disconnect"
     },
+    "optGDriveAuthorized": {
+        "message": "Authorized."
+    },
+    "optGDriveUnauthorized": {
+        "message": "Unauthorized."
+    },
+    "optAuthGDrive": {
+        "message": "Connect"
+    },
+    "optCancelGDrive": {
+        "message": "Disconnect"
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },
@@ -124,5 +136,17 @@
     },
     "popupBtnAuthDropbox": {
         "message": "Connect to Dropbox"
+    },
+    "popupBtnGdrive": {
+        "message": "Upload images"
+    },
+    "popupBtnAuthGdrive": {
+        "message": "Connect to Google Drive"
+    },
+    "popupSavedToGdrive": {
+        "message": "Registered the reservation task."
+    },
+    "popupSavedToGdriveFail": {
+        "message": "The reservation of the registeration task failed."
     }
 }

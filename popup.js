@@ -6,7 +6,7 @@ Popup.prototype = {
     initialize: function() {
         this.imageInfo = null;
         this.tabTitle = null;
-	this.tabUrl = null;
+        this.tabUrl = null;
         this.bg = chrome.extension.getBackgroundPage();
     },
     start: function() {
@@ -22,7 +22,9 @@ Popup.prototype = {
             "btnCopy": "popupBtnCopy",
             "popupImageCount": "popupImageCount",
 	    "btnDropbox": "popupBtnDropbox",
-	    "btnAuthDropbox": "popupBtnAuthDropbox"
+	    "btnAuthDropbox": "popupBtnAuthDropbox",
+	    "btnGdrive": "popupBtnGdrive",
+	    "btnAuthGdrive": "popupBtnAuthGdrive"
         };
         utils.setMessageResources(hash);
     },
@@ -30,11 +32,20 @@ Popup.prototype = {
         $("btnCopy").onclick = this.onClickCopy.bind(this);
         $("btnDropbox").onclick = this.onClickDropbox.bind(this);
         $("btnAuthDropbox").onclick = this.onClickAuthDropbox.bind(this);
+        $("btnGdrive").onclick = this.onClickGdrive.bind(this);
+        $("btnAuthGdrive").onclick = this.onClickAuthGdrive.bind(this);
         this.bg.ic.checkDropboxAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
                 utils.setVisible($("btnDropbox"), result);
 		utils.setVisible($("btnAuthDropbox"), !result);
+	    }.bind(this)
+	});
+        this.bg.ic.checkGDriveAuthorized({
+            onSuccess: function(req) {
+                var result = req.responseJSON.result;
+                utils.setVisible($("btnGdrive"), result);
+		utils.setVisible($("btnAuthGdrive"), !result);
             }.bind(this)
         });
         $("btnOption").onclick = this.onClickOption.bind(this);
@@ -50,7 +61,7 @@ Popup.prototype = {
     onReceiveImageInfo: function(info, title, url) {
         this.imageInfo = info;
         this.tabTitle = title;
-	    this.tabUrl = url;
+        this.tabUrl = url;
         this.showInfo(info);
         this.setImages(info);
         var script = this.createScript(info);
@@ -168,7 +179,7 @@ Popup.prototype = {
                          {display: "none"});
         this.bg.ic.saveToDropbox(
             this.tabTitle,
-	    this.tabUrl,
+            this.tabUrl,
             this.imageInfo,
             {
                 onSuccess: function(req) {
@@ -186,12 +197,42 @@ Popup.prototype = {
             }
         );
     },
+    onClickGdrive: function(evt) {
+        Element.setStyle($("btnGdrive"),
+                         {display: "none"});
+        this.bg.ic.saveToGDrive(
+            this.tabTitle,
+            this.tabUrl,
+            this.imageInfo,
+            {
+                onSuccess: function(req) {
+                    if (req.responseJSON.result) {
+                        this.showMessage(chrome.i18n.getMessage("popupSavedToGDrive"));
+                    } else {
+                        this.showMessage(chrome.i18n.getMessage("popupSavedToGDriveFail"));
+                    }
+                    Element.setStyle($("btnGdrive"),
+                                     {display: "inline-block"});
+                }.bind(this),
+                onFailure: function(req) {
+                    console.log(req);
+                }.bind(this)
+            }
+        );
+    },
     onClickAuthDropbox: function(evt) {
         var url = this.bg.ic.getDropboxAuthUrl();
-	    chrome.tabs.create({
-	        url: url,
-	        selected: true
-	    });
+	chrome.tabs.create({
+	    url: url,
+	    selected: true
+	});
+    },
+    onClickAuthGdrive: function(evt) {
+        var url = this.bg.ic.getGdriveAuthUrl();
+	chrome.tabs.create({
+	    url: url,
+	    selected: true
+	});
     }
 };
 

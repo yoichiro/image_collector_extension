@@ -1,6 +1,6 @@
 {
     "extDescription": {
-        "message": "この拡張機能は、あなたが今見ているページにある画像を集めるスクリプトファイルを提供し、さらに画像をDropboxに直接かつ迅速にアップロードする機能を提供します。"
+        "message": "この拡張機能は、あなたが今見ているページにある画像を集めるスクリプトファイルを提供し、さらに画像をDropboxやGoogle Driveに直接かつ迅速にアップロードする機能を提供します。"
     },
     "optCommand": {
         "message": "コマンド"
@@ -98,6 +98,18 @@
     "optCancelDropbox": {
         "message": "解除"
     },
+    "optGDriveAuthorized": {
+        "message": "認可されています。"
+    },
+    "optGDriveUnauthorized": {
+        "message": "認可されていません。"
+    },
+    "optAuthGDrive": {
+        "message": "接続"
+    },
+    "optCancelGDrive": {
+        "message": "解除"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },
@@ -124,5 +136,17 @@
     },
     "popupBtnAuthDropbox": {
         "message": "Dropboxに接続する"
+    },
+    "popupBtnGdrive": {
+        "message": "アップロードする"
+    },
+    "popupBtnAuthGdrive": {
+        "message": "Google Driveに接続する"
+    },
+    "popupSavedToGdrive": {
+        "message": "登録タスクが予約されました。"
+    },
+    "popupSavedToGdriveFail": {
+        "message": "登録タスクの予約に失敗しました。"
     }
 }

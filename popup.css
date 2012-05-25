@@ -32,7 +32,7 @@ div.pane_header img {
 
 #commands {
     width: 100%;
-    height: 188px;
+    height: 145px;
     resize: none;
 }
 
@@ -96,8 +96,9 @@ div.info_pane img {
     cursor: pointer;
 }
 
-div.dropbox_pane {
+div.service_pane {
     margin-left: 2px;
+    margin-bottom: 5px;
 }
 
 div.image_function {
