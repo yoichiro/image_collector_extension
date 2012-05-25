@@ -156,13 +156,7 @@ Options.prototype = {
         localStorage[name] = $(name).checked ? "true" : "";
     },
     onClickAuthDropbox: function(evt) {
-        var token = this.bg.ic.getSessionToken();
-        var optionUrl = chrome.extension.getURL("options.html");
-        var url =
-            this.bg.ic.getServerUrl() + "auth_dropbox?"
-            + "token=" + token
-            + "&callback=" + encodeURIComponent(optionUrl);
-        location.href = url;
+        location.href = this.bg.ic.getDropboxAuthUrl();
     },
     onClickCancelDropbox: function(evt) {
         this.bg.ic.cancelDropbox({

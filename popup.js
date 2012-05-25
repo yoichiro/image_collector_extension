@@ -20,24 +20,32 @@ Popup.prototype = {
     assignMessages: function() {
         var hash = {
             "btnCopy": "popupBtnCopy",
-            "popupImageCount": "popupImageCount"
+            "popupImageCount": "popupImageCount",
+	    "btnDropbox": "popupBtnDropbox",
+	    "btnAuthDropbox": "popupBtnAuthDropbox",
+	    "btnGdrive": "popupBtnGdrive",
+	    "btnAuthGdrive": "popupBtnAuthGdrive"
         };
         utils.setMessageResources(hash);
     },
     assignEventHandlers: function() {
         $("btnCopy").onclick = this.onClickCopy.bind(this);
-        $("btn_dropbox").onclick = this.onClickDropbox.bind(this);
-        $("btn_gdrive").onclick = this.onClickGDrive.bind(this);
+        $("btnDropbox").onclick = this.onClickDropbox.bind(this);
+        $("btnAuthDropbox").onclick = this.onClickAuthDropbox.bind(this);
+        $("btnGdrive").onclick = this.onClickGdrive.bind(this);
+        $("btnAuthGdrive").onclick = this.onClickAuthGdrive.bind(this);
         this.bg.ic.checkDropboxAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
-                utils.setVisible($("btn_dropbox"), result);
-            }.bind(this)
-        });
+                utils.setVisible($("btnDropbox"), result);
+		utils.setVisible($("btnAuthDropbox"), !result);
+	    }.bind(this)
+	});
         this.bg.ic.checkGDriveAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
-                utils.setVisible($("btn_gdrive"), result);
+                utils.setVisible($("btnGdrive"), result);
+		utils.setVisible($("btnAuthGdrive"), !result);
             }.bind(this)
         });
         $("btnOption").onclick = this.onClickOption.bind(this);
@@ -87,9 +95,52 @@ Popup.prototype = {
             images.appendChild(link);
             var img = document.createElement("img");
             img.src = url;
+            img.addClassName("content");
             link.appendChild(img);
             images.appendChild(document.createElement("br"));
+            var div = document.createElement("div");
+            div.addClassName("image_function");
+            this.appendTwitter(div, url);
+            this.appendFacebook(div, url);
+            images.appendChild(div);
         }.bind(this));
+    },
+    appendTwitter: function(parent, url) {
+        var self = this;
+        var img = document.createElement("img");
+        img.setAttribute("src", "./twitter.png");
+        parent.appendChild(img);
+        img.onclick = function(url) {
+            return function(evt) {
+                this.openTweetWindow(url);
+            }.bind(self);
+        }.bind(this)(url);
+    },
+    openTweetWindow: function(url) {
+        window.open(
+            "https://twitter.com/share?url="
+                + encodeURIComponent(url),
+            "_blank",
+            "width=550,height=450");
+    },
+    appendFacebook: function(parent, url) {
+        var self = this;
+        var img = document.createElement("img");
+        img.setAttribute("src", "./facebook_16.png");
+        parent.appendChild(img);
+        img.onclick = function(url) {
+            return function(evt) {
+                this.openFacebookWindow(url);
+            }.bind(self);
+        }.bind(this)(url);
+    },
+    openFacebookWindow: function(url) {
+        var link = "http://www.facebook.com/sharer/sharer.php?u="
+            + encodeURIComponent(url);
+        window.open(
+            link,
+            "_blank",
+            "width=680,height=360");
     },
     setSaveLink: function(script, title) {
         var blobBuilder = new WebKitBlobBuilder();
@@ -124,7 +175,7 @@ Popup.prototype = {
         this.copyToClipboard();
     },
     onClickDropbox: function(evt) {
-        Element.setStyle($("btn_dropbox"),
+        Element.setStyle($("btnDropbox"),
                          {display: "none"});
         this.bg.ic.saveToDropbox(
             this.tabTitle,
@@ -137,7 +188,7 @@ Popup.prototype = {
                     } else {
                         this.showMessage(chrome.i18n.getMessage("popupSavedToDropboxFail"));
                     }
-                    Element.setStyle($("btn_dropbox"),
+                    Element.setStyle($("btnDropbox"),
                                      {display: "inline-block"});
                 }.bind(this),
                 onFailure: function(req) {
@@ -146,8 +197,8 @@ Popup.prototype = {
             }
         );
     },
-    onClickGDrive: function(evt) {
-        Element.setStyle($("btn_gdrive"),
+    onClickGdrive: function(evt) {
+        Element.setStyle($("btnGdrive"),
                          {display: "none"});
         this.bg.ic.saveToGDrive(
             this.tabTitle,
@@ -160,7 +211,7 @@ Popup.prototype = {
                     } else {
                         this.showMessage(chrome.i18n.getMessage("popupSavedToGDriveFail"));
                     }
-                    Element.setStyle($("btn_gdrive"),
+                    Element.setStyle($("btnGdrive"),
                                      {display: "inline-block"});
                 }.bind(this),
                 onFailure: function(req) {
@@ -168,6 +219,20 @@ Popup.prototype = {
                 }.bind(this)
             }
         );
+    },
+    onClickAuthDropbox: function(evt) {
+        var url = this.bg.ic.getDropboxAuthUrl();
+	chrome.tabs.create({
+	    url: url,
+	    selected: true
+	});
+    },
+    onClickAuthGdrive: function(evt) {
+        var url = this.bg.ic.getGdriveAuthUrl();
+	chrome.tabs.create({
+	    url: url,
+	    selected: true
+	});
     }
 };
 

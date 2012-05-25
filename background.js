@@ -3,7 +3,8 @@ var IC = function() {
 };
 
 // IC.SERVER_URL = "http://ics.eisbahn.jp/";
-IC.SERVER_URL = "http://localhost:3000/";
+// IC.SERVER_URL = "http://localhost:3000/";
+IC.SERVER_URL = "http://10.192.81.147:3000/";
 
 IC.prototype = {
     initialize: function() {
@@ -202,6 +203,24 @@ IC.prototype = {
                 callbacks.onFailure(req);
             }.bind(this)
         });
+    },
+    getDropboxAuthUrl: function() {
+        var token = this.getSessionToken();
+        var optionUrl = chrome.extension.getURL("options.html");
+        var url =
+            this.getServerUrl() + "auth_dropbox?"
+            + "token=" + token
+            + "&callback=" + encodeURIComponent(optionUrl);
+	return url;
+    },
+    getGdriveAuthUrl: function() {
+        var token = this.getSessionToken();
+        var optionUrl = chrome.extension.getURL("options.html");
+        var url =
+            this.getServerUrl() + "auth_gdrive?"
+            + "token=" + token
+            + "&callback=" + encodeURIComponent(optionUrl);
+	return url;
     }
 };
 

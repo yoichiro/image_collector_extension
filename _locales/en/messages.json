@@ -131,10 +131,22 @@
     "popupImageCount": {
         "message": "Image count:"
     },
-    "popupSavedToGDrive": {
+    "popupBtnDropbox": {
+        "message": "Upload images"
+    },
+    "popupBtnAuthDropbox": {
+        "message": "Connect to Dropbox"
+    },
+    "popupBtnGdrive": {
+        "message": "Upload images"
+    },
+    "popupBtnAuthGdrive": {
+        "message": "Connect to Google Drive"
+    },
+    "popupSavedToGdrive": {
         "message": "Registered the reservation task."
     },
-    "popupSavedToGDriveFail": {
+    "popupSavedToGdriveFail": {
         "message": "The reservation of the registeration task failed."
     }
 }

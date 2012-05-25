@@ -131,10 +131,22 @@
     "popupImageCount": {
         "message": "画像数:"
     },
-    "popupSavedToGDrive": {
+    "popupBtnDropbox": {
+        "message": "アップロードする"
+    },
+    "popupBtnAuthDropbox": {
+        "message": "Dropboxに接続する"
+    },
+    "popupBtnGdrive": {
+        "message": "アップロードする"
+    },
+    "popupBtnAuthGdrive": {
+        "message": "Google Driveに接続する"
+    },
+    "popupSavedToGdrive": {
         "message": "登録タスクが予約されました。"
     },
-    "popupSavedToGDriveFail": {
+    "popupSavedToGdriveFail": {
         "message": "登録タスクの予約に失敗しました。"
     }
 }

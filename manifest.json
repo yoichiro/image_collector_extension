@@ -1,7 +1,7 @@
 {
     "name": "Image collector extension for testing",
     "description": "__MSG_extDescription__",
-    "version": "2.1.3",
+    "version": "3.0.0",
     "icons": {
         "48": "icon48.png",
         "128": "icon128.png"
@@ -17,7 +17,5 @@
         "tabs",
         "http://*/*",
         "https://*/*"
-    ],
-    "container": "GOOGLE_DRIVE",
-    "api_console_project_id": "894160100931"
+    ]
 }
