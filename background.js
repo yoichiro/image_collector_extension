@@ -209,7 +209,7 @@ IC.prototype = {
             this.getServerUrl() + "auth_dropbox?"
             + "token=" + token
             + "&callback=" + encodeURIComponent(optionUrl);
-	return url;
+        return url;
     },
     getGdriveAuthUrl: function() {
         var token = this.getSessionToken();
@@ -218,7 +218,7 @@ IC.prototype = {
             this.getServerUrl() + "auth_gdrive?"
             + "token=" + token
             + "&callback=" + encodeURIComponent(optionUrl);
-	return url;
+        return url;
     }
 };
 
