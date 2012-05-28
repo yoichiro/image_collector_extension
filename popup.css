@@ -102,7 +102,6 @@ div.service_pane {
 }
 
 div.image_function {
-    text-align: right;
     width: 165px;
     font-size: 11px;
     margin-bottom: 3px;
@@ -111,4 +110,10 @@ div.image_function {
 div.image_function img {
     cursor: pointer;
     margin-left: 3px;
+    float: right;
+}
+
+div.image_function img.delete {
+    float: left;
+    margin-left: 8px;
 }

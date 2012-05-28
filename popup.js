@@ -7,6 +7,7 @@ Popup.prototype = {
         this.imageInfo = null;
         this.tabTitle = null;
         this.tabUrl = null;
+        this.deletedUrls = new Array();
         this.bg = chrome.extension.getBackgroundPage();
     },
     start: function() {
@@ -64,16 +65,16 @@ Popup.prototype = {
         this.tabUrl = url;
         this.showInfo(info);
         this.setImages(info);
-        var script = this.createScript(info);
-        this.setUrls(script);
+        var script = this.createScript();
+        this.setScript(script);
         this.setSaveLink(script, title);
     },
     showInfo: function(info) {
         $("image_count").innerHTML = info.urls.length;
     },
-    createScript: function(info) {
+    createScript: function() {
         var template = this.bg.ic.getCommandTemplate();
-        var urls = info.urls;
+        var urls = this.getFinalUrls();
         var script = "";
         urls.each(function(url) {
             var command = template.replace("$url", url);
@@ -81,7 +82,16 @@ Popup.prototype = {
         });
         return script;
     },
-    setUrls: function(script) {
+    getFinalUrls: function() {
+        var result = new Array();
+        this.imageInfo.urls.each(function(url) {
+            if (!this.deletedUrls.include(url)) {
+                result.push(url);
+            }
+        }.bind(this));
+        return result;
+    },
+    setScript: function(script) {
         $("commands").innerHTML = script;
     },
     setImages: function(info) {
@@ -89,21 +99,41 @@ Popup.prototype = {
         images.innerHTML = "";
         var urls = info.urls;
         urls.each(function(url) {
+            var parent = document.createElement("div");
             var link = document.createElement("a");
             link.href = url;
             link.target = "_blank";
-            images.appendChild(link);
+            parent.appendChild(link);
             var img = document.createElement("img");
             img.src = url;
             img.addClassName("content");
             link.appendChild(img);
-            images.appendChild(document.createElement("br"));
+            parent.appendChild(document.createElement("br"));
             var div = document.createElement("div");
             div.addClassName("image_function");
             this.appendTwitter(div, url);
             this.appendFacebook(div, url);
-            images.appendChild(div);
+            this.appendDelete(div, url, parent);
+            parent.appendChild(div);
+            images.appendChild(parent);
         }.bind(this));
+    },
+    appendDelete: function(div, url, parent) {
+        var self = this;
+        var img = document.createElement("img");
+        img.setAttribute("src", "./delete.png");
+        img.addClassName("delete");
+        div.appendChild(img);
+        img.onclick = function(url, div) {
+            return function(evt) {
+                Element.setStyle(div, {
+                    display: "none"
+                });
+                this.deletedUrls.push(url);
+                var script = this.createScript();
+                this.setScript(script);
+            }.bind(self);
+        }.bind(this)(url, parent);
     },
     appendTwitter: function(parent, url) {
         var self = this;
@@ -180,7 +210,7 @@ Popup.prototype = {
         this.bg.ic.saveToDropbox(
             this.tabTitle,
             this.tabUrl,
-            this.imageInfo,
+            this.getFinalUrls(),
             {
                 onSuccess: function(req) {
                     if (req.responseJSON.result) {
@@ -203,7 +233,7 @@ Popup.prototype = {
         this.bg.ic.saveToGDrive(
             this.tabTitle,
             this.tabUrl,
-            this.imageInfo,
+            this.getFinalUrls(),
             {
                 onSuccess: function(req) {
                     if (req.responseJSON.result) {

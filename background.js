@@ -157,13 +157,13 @@ IC.prototype = {
             }.bind(this)
         });
     },
-    saveToDropbox: function(title, pageUrl, imageInfo, callbacks) {
-        this.saveToService("dropbox", title, pageUrl, imageInfo, callbacks);
+    saveToDropbox: function(title, pageUrl, urls, callbacks) {
+        this.saveToService("dropbox", title, pageUrl, urls, callbacks);
     },
-    saveToGDrive: function(title, pageUrl, imageInfo, callbacks) {
-        this.saveToService("gdrive", title, pageUrl, imageInfo, callbacks);
+    saveToGDrive: function(title, pageUrl, urls, callbacks) {
+        this.saveToService("gdrive", title, pageUrl, urls, callbacks);
     },
-    saveToService: function(name, title, pageUrl, imageInfo, callbacks) {
+    saveToService: function(name, title, pageUrl, urls, callbacks) {
         var url = IC.SERVER_URL + "ajax/save_to_" + name;
         new Ajax.Request(url, {
             method: "post",
@@ -171,7 +171,7 @@ IC.prototype = {
                 token: this.getSessionToken(),
                 title: title,
                 page_url: pageUrl,
-                urls: imageInfo.urls.join(" ")
+                urls: urls.join(" ")
             },
             onSuccess: function(req) {
                 callbacks.onSuccess(req);
@@ -203,19 +203,16 @@ IC.prototype = {
         });
     },
     getDropboxAuthUrl: function() {
-        var token = this.getSessionToken();
-        var optionUrl = chrome.extension.getURL("options.html");
-        var url =
-            this.getServerUrl() + "auth_dropbox?"
-            + "token=" + token
-            + "&callback=" + encodeURIComponent(optionUrl);
-        return url;
+        return this.getServiceAuthUrl("dropbox");
     },
     getGdriveAuthUrl: function() {
+        return this.getServiceAuthUrl("gdrive");
+    },
+    getServiceAuthUrl: function(name) {
         var token = this.getSessionToken();
         var optionUrl = chrome.extension.getURL("options.html");
         var url =
-            this.getServerUrl() + "auth_gdrive?"
+            this.getServerUrl() + "auth_" + name + "?"
             + "token=" + token
             + "&callback=" + encodeURIComponent(optionUrl);
         return url;
