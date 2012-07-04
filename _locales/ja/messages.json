@@ -110,6 +110,12 @@
     "optCancelGDrive": {
         "message": "解除"
     },
+    "optWithoutCreatingFolder": {
+        "message": "Webページごとにディレクトリを作成しない。"
+    },
+    "optWithoutCreatingFolderDescription": {
+        "message": "(チェックを入れた場合、Webページごとにディレクトリは作成されず、ルートディレクトリ中に画像が格納されます。)"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },

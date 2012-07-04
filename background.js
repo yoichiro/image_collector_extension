@@ -171,7 +171,8 @@ IC.prototype = {
                 token: this.getSessionToken(),
                 title: title,
                 page_url: pageUrl,
-                urls: urls.join(" ")
+                urls: urls.join(" "),
+                create_dir: !this.isWithoutCreatingFolder()
             },
             onSuccess: function(req) {
                 callbacks.onSuccess(req);
@@ -216,6 +217,9 @@ IC.prototype = {
             + "token=" + token
             + "&callback=" + encodeURIComponent(optionUrl);
         return url;
+    },
+    isWithoutCreatingFolder: function() {
+        return Boolean(localStorage["without_creating_folder"]);
     }
 };
 

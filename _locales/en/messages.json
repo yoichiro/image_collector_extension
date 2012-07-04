@@ -110,6 +110,12 @@
     "optCancelGDrive": {
         "message": "Disconnect"
     },
+    "optWithoutCreatingFolder": {
+        "message": "Not creating a directory of each Web page."
+    },
+    "optWithoutCreatingFolderDescription": {
+        "message": "If checked, the directory of each Web page will not be created, and images will be put into the root directory."
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },

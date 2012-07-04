@@ -45,7 +45,9 @@ Options.prototype = {
             "gdrive_authorized": "optGDriveAuthorized",
             "gdrive_unauthorized": "optGDriveUnauthorized",
             "auth_gdrive": "optAuthGDrive",
-            "cancel_gdrive": "optCancelGDrive"
+            "cancel_gdrive": "optCancelGDrive",
+            "optWithoutCreatingFolder": "optWithoutCreatingFolder",
+            "optWithoutCreatingFolderDescription": "optWithoutCreatingFolderDescription"
         };
         utils.setMessageResources(hash);
     },
@@ -70,6 +72,8 @@ Options.prototype = {
             this.onClickAuthGDrive.bind(this);
         $("cancel_gdrive").onclick =
             this.onClickCancelGDrive.bind(this);
+        $("without_creating_folder").onclick =
+            this.onClickWithoutCreatingFolder.bind(this);
     },
     restoreConfigurations: function() {
         $("command_template").value = this.bg.ic.getCommandTemplate();
@@ -79,6 +83,7 @@ Options.prototype = {
         $("filter_size_height").value = this.bg.ic.getFilterSizeHeight();
         $("priority_link_href").checked = this.bg.ic.isPriorityLinkHref();
         $("download_filename").value = this.bg.ic.getDownloadFilename();
+        $("without_creating_folder").checked = this.bg.ic.isWithoutCreatingFolder();
     },
     checkDropboxAuthorized: function() {
         this.bg.ic.checkDropboxAuthorized({
@@ -186,6 +191,9 @@ Options.prototype = {
             + "token=" + token
             + "&callback=" + encodeURIComponent(optionUrl);
         location.href = url;
+    },
+    onClickWithoutCreatingFolder: function() {
+        this.changeCheckboxConfiguration("without_creating_folder");
     }
 };
 

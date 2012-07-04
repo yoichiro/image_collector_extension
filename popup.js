@@ -22,10 +22,10 @@ Popup.prototype = {
         var hash = {
             "btnCopy": "popupBtnCopy",
             "popupImageCount": "popupImageCount",
-	        "btnDropbox": "popupBtnDropbox",
-	        "btnAuthDropbox": "popupBtnAuthDropbox",
-	        "btnGdrive": "popupBtnGdrive",
-	        "btnAuthGdrive": "popupBtnAuthGdrive"
+            "btnDropbox": "popupBtnDropbox",
+            "btnAuthDropbox": "popupBtnAuthDropbox",
+            "btnGdrive": "popupBtnGdrive",
+            "btnAuthGdrive": "popupBtnAuthGdrive"
         };
         utils.setMessageResources(hash);
     },
@@ -39,14 +39,14 @@ Popup.prototype = {
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
                 utils.setVisible($("btnDropbox"), result);
-		        utils.setVisible($("btnAuthDropbox"), !result);
-	        }.bind(this)
-	    });
+                utils.setVisible($("btnAuthDropbox"), !result);
+            }.bind(this)
+        });
         this.bg.ic.checkGDriveAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
                 utils.setVisible($("btnGdrive"), result);
-		        utils.setVisible($("btnAuthGdrive"), !result);
+                utils.setVisible($("btnAuthGdrive"), !result);
             }.bind(this)
         });
         $("btnOption").onclick = this.onClickOption.bind(this);
@@ -252,17 +252,17 @@ Popup.prototype = {
     },
     onClickAuthDropbox: function(evt) {
         var url = this.bg.ic.getDropboxAuthUrl();
-	    chrome.tabs.create({
-	        url: url,
-	        selected: true
-	    });
+        chrome.tabs.create({
+            url: url,
+            selected: true
+        });
     },
     onClickAuthGdrive: function(evt) {
         var url = this.bg.ic.getGdriveAuthUrl();
-	    chrome.tabs.create({
-	        url: url,
-	        selected: true
-	    });
+        chrome.tabs.create({
+            url: url,
+            selected: true
+        });
     }
 };
 
