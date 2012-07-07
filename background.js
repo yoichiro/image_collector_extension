@@ -220,6 +220,15 @@ IC.prototype = {
     },
     isWithoutCreatingFolder: function() {
         return Boolean(localStorage["without_creating_folder"]);
+    },
+    loadMonitor: function(callbacks) {
+        var url = IC.SERVER_URL + "monitor";
+        new Ajax.Request(url, {
+            method: "get",
+            onSuccess: function(req) {
+                callbacks.onSuccess(req);
+            }.bind(this)
+        });
     }
 };
 

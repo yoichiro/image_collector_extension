@@ -12,6 +12,7 @@ Options.prototype = {
         this.restoreConfigurations();
         this.checkDropboxAuthorized();
         this.checkGDriveAuthorized();
+        this.loadMonitor();
     },
     assignMessages: function() {
         var hash = {
@@ -47,7 +48,11 @@ Options.prototype = {
             "auth_gdrive": "optAuthGDrive",
             "cancel_gdrive": "optCancelGDrive",
             "optWithoutCreatingFolder": "optWithoutCreatingFolder",
-            "optWithoutCreatingFolderDescription": "optWithoutCreatingFolderDescription"
+            "optWithoutCreatingFolderDescription": "optWithoutCreatingFolderDescription",
+            "optStat": "optStat",
+            "optStatRemainingJob": "optStatRemainingJob",
+            "optStatPageCount": "optStatPageCount",
+            "optStatImageCount": "optStatImageCount"
         };
         utils.setMessageResources(hash);
     },
@@ -194,6 +199,24 @@ Options.prototype = {
     },
     onClickWithoutCreatingFolder: function() {
         this.changeCheckboxConfiguration("without_creating_folder");
+    },
+    loadMonitor: function() {
+        this.bg.ic.loadMonitor({
+            onSuccess: function(req) {
+                var result = req.responseJSON;
+                $("stat_remaining_job_count").innerText =
+                    this.addFigure(result.job_count);
+                $("stat_page_count").innerText =
+                    this.addFigure(result.page_count);
+                $("stat_image_count").innerText =
+                    this.addFigure(result.image_count);
+            }.bind(this)
+        });
+    },
+    addFigure: function(value) {
+        var num = new String(value).replace(/,/g, "");
+        while (num != (num = num.replace(/^(-?\d+)(\d{3})/, "$1,$2")));
+        return num;
     }
 };
 

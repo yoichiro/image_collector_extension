@@ -116,6 +116,18 @@
     "optWithoutCreatingFolderDescription": {
         "message": "(チェックを入れた場合、Webページごとにディレクトリは作成されず、ルートディレクトリ中に画像が格納されます。)"
     },
+    "optStat": {
+        "message": "統計情報"
+    },
+    "optStatRemainingJob": {
+        "message": "残りジョブ数"
+    },
+    "optStatPageCount": {
+        "message": "総ページ数"
+    },
+    "optStatImageCount": {
+        "message": "総イメージ数"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },
