@@ -12,6 +12,7 @@ Options.prototype = {
         this.restoreConfigurations();
         this.checkDropboxAuthorized();
         this.checkGDriveAuthorized();
+        this.checkSDriveAuthorized();
         this.loadMonitor();
     },
     assignMessages: function() {
@@ -52,7 +53,11 @@ Options.prototype = {
             "optStat": "optStat",
             "optStatRemainingJob": "optStatRemainingJob",
             "optStatPageCount": "optStatPageCount",
-            "optStatImageCount": "optStatImageCount"
+            "optStatImageCount": "optStatImageCount",
+            "sdrive_authorized": "optSDriveAuthorized",
+            "sdrive_unauthorized": "optSDriveUnauthorized",
+            "auth_sdrive": "optAuthSDrive",
+            "cancel_sdrive": "optCancelSDrive"
         };
         utils.setMessageResources(hash);
     },
@@ -79,6 +84,10 @@ Options.prototype = {
             this.onClickCancelGDrive.bind(this);
         $("without_creating_folder").onclick =
             this.onClickWithoutCreatingFolder.bind(this);
+        $("auth_sdrive").onclick =
+            this.onClickAuthSDrive.bind(this);
+        $("cancel_sdrive").onclick =
+            this.onClickCancelSDrive.bind(this);
     },
     restoreConfigurations: function() {
         $("command_template").value = this.bg.ic.getCommandTemplate();
@@ -109,6 +118,17 @@ Options.prototype = {
                 utils.setVisible($("gdrive_unauthorized"), !result);
                 utils.setVisible($("auth_gdrive"), !result);
                 utils.setVisible($("cancel_gdrive"), result);
+            }.bind(this)
+        });
+    },
+    checkSDriveAuthorized: function() {
+        this.bg.ic.checkSDriveAuthorized({
+            onSuccess: function(req) {
+                var result = req.responseJSON.result;
+                utils.setVisible($("sdrive_authorized"), result);
+                utils.setVisible($("sdrive_unauthorized"), !result);
+                utils.setVisible($("auth_sdrive"), !result);
+                utils.setVisible($("cancel_sdrive"), result);
             }.bind(this)
         });
     },
@@ -188,11 +208,30 @@ Options.prototype = {
             }.bind(this)
         });
     },
+    onClickCancelSDrive: function(evt) {
+        this.bg.ic.cancelSDrive({
+            onSuccess: function(req) {
+                this.checkSDriveAuthorized();
+            }.bind(this),
+            onFailure: function(req) {
+                this.checkSDriveAuthorized();
+            }.bind(this)
+        });
+    },
     onClickAuthGDrive: function(evt) {
         var token = this.bg.ic.getSessionToken();
         var optionUrl = chrome.extension.getURL("options.html");
         var url =
             this.bg.ic.getServerUrl() + "auth_gdrive?"
+            + "token=" + token
+            + "&callback=" + encodeURIComponent(optionUrl);
+        location.href = url;
+    },
+    onClickAuthSDrive: function(evt) {
+        var token = this.bg.ic.getSessionToken();
+        var optionUrl = chrome.extension.getURL("options.html");
+        var url =
+            this.bg.ic.getServerUrl() + "auth_sdrive?"
             + "token=" + token
             + "&callback=" + encodeURIComponent(optionUrl);
         location.href = url;

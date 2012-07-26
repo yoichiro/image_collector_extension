@@ -141,6 +141,9 @@ IC.prototype = {
     checkGDriveAuthorized: function(callbacks) {
         this.checkServiceAuthorized("gdrive", callbacks);
     },
+    checkSDriveAuthorized: function(callbacks) {
+        this.checkServiceAuthorized("sdrive", callbacks);
+    },
     checkServiceAuthorized: function(name, callbacks) {
         var token = this.getSessionToken();
         var url = IC.SERVER_URL + "ajax/is_valid_" + name;
@@ -162,6 +165,9 @@ IC.prototype = {
     },
     saveToGDrive: function(title, pageUrl, urls, callbacks) {
         this.saveToService("gdrive", title, pageUrl, urls, callbacks);
+    },
+    saveToSDrive: function(title, pageUrl, urls, callbacks) {
+        this.saveToService("sdrive", title, pageUrl, urls, callbacks);
     },
     saveToService: function(name, title, pageUrl, urls, callbacks) {
         var url = IC.SERVER_URL + "ajax/save_to_" + name;
@@ -188,6 +194,9 @@ IC.prototype = {
     cancelGDrive: function(callbacks) {
         this.cancelService("gdrive", callbacks);
     },
+    cancelSDrive: function(callbacks) {
+        this.cancelService("sdrive", callbacks);
+    },
     cancelService: function(name, callbacks) {
         var url = IC.SERVER_URL + "ajax/cancel_" + name;
         new Ajax.Request(url, {
@@ -208,6 +217,9 @@ IC.prototype = {
     },
     getGdriveAuthUrl: function() {
         return this.getServiceAuthUrl("gdrive");
+    },
+    getSdriveAuthUrl: function() {
+        return this.getServiceAuthUrl("sdrive");
     },
     getServiceAuthUrl: function(name) {
         var token = this.getSessionToken();

@@ -25,7 +25,9 @@ Popup.prototype = {
             "btnDropbox": "popupBtnDropbox",
             "btnAuthDropbox": "popupBtnAuthDropbox",
             "btnGdrive": "popupBtnGdrive",
-            "btnAuthGdrive": "popupBtnAuthGdrive"
+            "btnAuthGdrive": "popupBtnAuthGdrive",
+            "btnSdrive": "popupBtnSdrive",
+            "btnAuthSdrive": "popupBtnAuthSdrive"
         };
         utils.setMessageResources(hash);
     },
@@ -35,6 +37,8 @@ Popup.prototype = {
         $("btnAuthDropbox").onclick = this.onClickAuthDropbox.bind(this);
         $("btnGdrive").onclick = this.onClickGdrive.bind(this);
         $("btnAuthGdrive").onclick = this.onClickAuthGdrive.bind(this);
+        $("btnSdrive").onclick = this.onClickSdrive.bind(this);
+        $("btnAuthSdrive").onclick = this.onClickAuthSdrive.bind(this);
         this.bg.ic.checkDropboxAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
@@ -47,6 +51,13 @@ Popup.prototype = {
                 var result = req.responseJSON.result;
                 utils.setVisible($("btnGdrive"), result);
                 utils.setVisible($("btnAuthGdrive"), !result);
+            }.bind(this)
+        });
+        this.bg.ic.checkSDriveAuthorized({
+            onSuccess: function(req) {
+                var result = req.responseJSON.result;
+                utils.setVisible($("btnSdrive"), result);
+                utils.setVisible($("btnAuthSdrive"), !result);
             }.bind(this)
         });
         $("btnOption").onclick = this.onClickOption.bind(this);
@@ -250,6 +261,29 @@ Popup.prototype = {
             }
         );
     },
+    onClickSdrive: function(evt) {
+        Element.setStyle($("btnSdrive"),
+                         {display: "none"});
+        this.bg.ic.saveToSDrive(
+            this.tabTitle,
+            this.tabUrl,
+            this.getFinalUrls(),
+            {
+                onSuccess: function(req) {
+                    if (req.responseJSON.result) {
+                        this.showMessage(chrome.i18n.getMessage("popupSavedToSDrive"));
+                    } else {
+                        this.showMessage(chrome.i18n.getMessage("popupSavedToSDriveFail"));
+                    }
+                    Element.setStyle($("btnSdrive"),
+                                     {display: "inline-block"});
+                }.bind(this),
+                onFailure: function(req) {
+                    console.log(req);
+                }.bind(this)
+            }
+        );
+    },
     onClickAuthDropbox: function(evt) {
         var url = this.bg.ic.getDropboxAuthUrl();
         chrome.tabs.create({
@@ -259,6 +293,13 @@ Popup.prototype = {
     },
     onClickAuthGdrive: function(evt) {
         var url = this.bg.ic.getGdriveAuthUrl();
+        chrome.tabs.create({
+            url: url,
+            selected: true
+        });
+    },
+    onClickAuthSdrive: function(evt) {
+        var url = this.bg.ic.getSdriveAuthUrl();
         chrome.tabs.create({
             url: url,
             selected: true

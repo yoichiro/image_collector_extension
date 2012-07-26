@@ -1,6 +1,6 @@
 {
     "extDescription": {
-        "message": "This extension provides you to retrieve the script file to collect images on the page you're just watching and to upload them to Dropbox or Google Drive directly and quickly."
+        "message": "This extension provides you to retrieve the script file to collect images on the page you're just watching and to upload them to Dropbox, Google Drive and SkyDrive directly and quickly."
     },
     "optCommand": {
         "message": "Command"
@@ -110,6 +110,18 @@
     "optCancelGDrive": {
         "message": "Disconnect"
     },
+    "optSDriveAuthorized": {
+        "message": "Authorized."
+    },
+    "optSDriveUnauthorized": {
+        "message": "Unauthorized."
+    },
+    "optAuthSDrive": {
+        "message": "Connect"
+    },
+    "optCancelSDrive": {
+        "message": "Disconnect"
+    },
     "optWithoutCreatingFolder": {
         "message": "Not creating a directory of each Web page."
     },
@@ -165,6 +177,18 @@
         "message": "Registered the reservation task."
     },
     "popupSavedToGdriveFail": {
+        "message": "The reservation of the registeration task failed."
+    },
+    "popupBtnSdrive": {
+        "message": "Upload images"
+    },
+    "popupBtnAuthSdrive": {
+        "message": "Connect to SkyDrive"
+    },
+    "popupSavedToSdrive": {
+        "message": "Registered the reservation task."
+    },
+    "popupSavedToSdriveFail": {
         "message": "The reservation of the registeration task failed."
     }
 }
