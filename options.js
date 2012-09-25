@@ -5,6 +5,9 @@ var Options = function() {
 Options.prototype = {
     initialize: function() {
         this.bg = chrome.extension.getBackgroundPage();
+        window.addEventListener("load", function(evt) {
+            this.start();
+        }.bind(this));
     },
     start: function() {
         this.assignMessages();
