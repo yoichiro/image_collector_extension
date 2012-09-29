@@ -23,25 +23,25 @@ Popup.prototype = {
     },
     assignMessages: function() {
         var hash = {
-            "btnCopy": "popupBtnCopy",
             "popupImageCount": "popupImageCount",
             "btnDropbox": "popupBtnDropbox",
             "btnAuthDropbox": "popupBtnAuthDropbox",
             "btnGdrive": "popupBtnGdrive",
             "btnAuthGdrive": "popupBtnAuthGdrive",
             "btnSdrive": "popupBtnSdrive",
-            "btnAuthSdrive": "popupBtnAuthSdrive"
+            "btnAuthSdrive": "popupBtnAuthSdrive",
+            "btnLocal": "popupBtnSave"
         };
         utils.setMessageResources(hash);
     },
     assignEventHandlers: function() {
-        $("btnCopy").onclick = this.onClickCopy.bind(this);
         $("btnDropbox").onclick = this.onClickDropbox.bind(this);
         $("btnAuthDropbox").onclick = this.onClickAuthDropbox.bind(this);
         $("btnGdrive").onclick = this.onClickGdrive.bind(this);
         $("btnAuthGdrive").onclick = this.onClickAuthGdrive.bind(this);
         $("btnSdrive").onclick = this.onClickSdrive.bind(this);
         $("btnAuthSdrive").onclick = this.onClickAuthSdrive.bind(this);
+        $("btnLocal").onclick = this.onClickLocal.bind(this);
         this.bg.ic.checkDropboxAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
@@ -80,7 +80,6 @@ Popup.prototype = {
         this.showInfo(info);
         this.setImages(info);
         var script = this.createScript();
-        this.setScript(script);
         this.setSaveLink(script, title);
     },
     showInfo: function(info) {
@@ -104,9 +103,6 @@ Popup.prototype = {
             }
         }.bind(this));
         return result;
-    },
-    setScript: function(script) {
-        $("commands").innerHTML = script;
     },
     setImages: function(info) {
         var images = $("images");
@@ -145,7 +141,7 @@ Popup.prototype = {
                 });
                 this.deletedUrls.push(url);
                 var script = this.createScript();
-                this.setScript(script);
+                this.setSaveLink(script, this.tabTitle);
             }.bind(self);
         }.bind(this)(url, parent);
     },
@@ -189,7 +185,12 @@ Popup.prototype = {
     setSaveLink: function(script, title) {
         var blobBuilder = new WebKitBlobBuilder();
         blobBuilder.append(script);
-        var a = document.createElement("a");
+        var a = document.getElementById("ics_script_link");
+        if (a) {
+            $("command_pane").removeChild(a);
+        }
+        a = document.createElement("a");
+        a.id = "ics_script_link";
         a.href = window.webkitURL.createObjectURL(blobBuilder.getBlob());
         var filename = this.bg.ic.getDownloadFilename();
         filename = filename.replace("$tabname", title);
@@ -208,15 +209,6 @@ Popup.prototype = {
         setTimeout(function() {
             this.showMessage("");
         }.bind(this), 5000);
-    },
-    copyToClipboard: function() {
-        $("commands").focus();
-        $("commands").select();
-        document.execCommand("copy");
-        this.showMessage(chrome.i18n.getMessage("popupCopied"));
-    },
-    onClickCopy: function(evt) {
-        this.copyToClipboard();
     },
     onClickDropbox: function(evt) {
         Element.setStyle($("btnDropbox"),
@@ -307,6 +299,27 @@ Popup.prototype = {
             url: url,
             selected: true
         });
+    },
+    onClickLocal: function(evt) {
+        Element.setStyle($("btnLocal"),
+                         {display: "none"});
+        this.bg.ic.saveToLocal(
+            this.tabTitle,
+            this.tabUrl,
+            this.getFinalUrls(),
+            {
+                onSuccess: function(req) {
+                    if (req.responseJSON.result) {
+                        this.bg.ic.downloadLocal(this.getFinalUrls());
+                    }
+                    Element.setStyle($("btnLocal"),
+                                     {display: "inline-block"});
+                }.bind(this),
+                onFailure: function(req) {
+                    console.log(req);
+                }.bind(this)
+            }
+        );
     }
 };
 

@@ -1,6 +1,6 @@
 body {
     width: 400px;
-    height: 330px;
+    height: 290px;
     font-family: "Verdana","Arial",sans-serif;
     font-size: 14px;
 }
@@ -13,13 +13,6 @@ div.right_pane {
     float: left;
 }
 
-div.command_pane {
-    position: relative;
-    width: 195px;
-    margin-top: 20px;
-    margin-left: 2px;
-}
-
 div.pane_header div {
     margin-bottom: 3px;
     margin-left: 3px;
@@ -30,12 +23,6 @@ div.pane_header img {
     float: left;
 }
 
-#commands {
-    width: 100%;
-    height: 100px;
-    resize: none;
-}
-
 div.image_pane {
     position: relative;
     width: 195px;
@@ -43,7 +30,7 @@ div.image_pane {
 
 #images {
     width: 100%;
-    height: 283px;
+    height: 240px;
     margin-bottom: 5px;
     overflow: auto;
     border: 1px solid gray;
@@ -69,12 +56,6 @@ div.copyright {
     bottom: 3px;
     color: gray;
     font-size: 10px;
-}
-
-#command_pane {
-    text-align: right;
-    width: 195px;
-    font-size: 12px;
 }
 
 div.function_pane {

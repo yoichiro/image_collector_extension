@@ -1,6 +1,6 @@
 {
     "extDescription": {
-        "message": "This extension provides you to retrieve the script file to collect images on the page you're just watching and to upload them to Dropbox, Google Drive and SkyDrive directly and quickly."
+        "message": "This extension provides you to retrieve images on the page you're seeing now quickly. Images cannot only be downloaded to your PC directly, but they also can be uploaded to Dropbox, Google Drive and SkyDrive directly and quickly."
     },
     "optCommand": {
         "message": "Command"
@@ -12,7 +12,7 @@
         "message": "(You can embed the URL of each image by using the $url.)"
     },
     "optCommandTemplateSave": {
-        "message": "Save"
+        "message": "Download"
     },
     "optCommandTemplateSaveSucceed": {
         "message": "Succeeded."
@@ -147,7 +147,7 @@
         "message": "Copy"
     },
     "popupBtnSave": {
-        "message": "Save"
+        "message": "Download"
     },
     "popupSavedFile": {
         "message": "Saved to download folder."

@@ -14,9 +14,6 @@ IC.prototype = {
         return IC.SERVER_URL;
     },
     setupEventHandler: function() {
-        chrome.tabs.onSelectionChanged.addListener(function(id, info) {
-            this.onSelectionChanged(id);
-        }.bind(this));
         chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab) {
             this.onSelectionChanged(id);
         }.bind(this));
@@ -169,6 +166,9 @@ IC.prototype = {
     saveToSDrive: function(title, pageUrl, urls, callbacks) {
         this.saveToService("sdrive", title, pageUrl, urls, callbacks);
     },
+    saveToLocal: function(title, pageUrl, urls, callbacks) {
+        this.saveToService("local", title, pageUrl, urls, callbacks);
+    },
     saveToService: function(name, title, pageUrl, urls, callbacks) {
         var url = IC.SERVER_URL + "ajax/save_to_" + name;
         new Ajax.Request(url, {
@@ -241,6 +241,11 @@ IC.prototype = {
                 callbacks.onSuccess(req);
             }.bind(this)
         });
+    },
+    downloadLocal: function(images) {
+        chrome.tabs.getSelected(null, function(tab) {
+            chrome.tabs.sendMessage(tab.id, images);
+        }.bind(this));
     }
 };
 
