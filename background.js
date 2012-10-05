@@ -54,7 +54,10 @@ IC.prototype = {
     onRequest: function(message, tab, sendRequest) {
         var urls = this.filterUrls(message.images);
         if (urls.length > 0) {
-            this.tabs[tab.id] = {urls: urls};
+            this.tabs[tab.id] = {
+                urls: urls,
+                images: message.images
+            };
             chrome.pageAction.show(tab.id);
         } else {
             delete this.tabs[tab.id];
@@ -244,7 +247,27 @@ IC.prototype = {
     },
     downloadLocal: function(images) {
         chrome.tabs.getSelected(null, function(tab) {
-            chrome.tabs.sendMessage(tab.id, images);
+            chrome.tabs.sendMessage(tab.id, {
+                operation: "download_local",
+                images: images
+            });
+        }.bind(this));
+    },
+    goToImage: function(url) {
+        chrome.tabs.getSelected(null, function(tab) {
+            var images = this.tabs[tab.id].images;
+            var pos = -1;
+            for (var i = 0; i < images.length; i++) {
+                var image = images[i];
+                if (image.url == url) {
+                    pos = image.pos;
+                    break;
+                }
+            }
+            chrome.tabs.sendMessage(tab.id, {
+                operation: "go_to_image",
+                pos: pos
+            });
         }.bind(this));
     }
 };

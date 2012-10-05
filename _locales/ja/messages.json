@@ -190,5 +190,8 @@
     },
     "popupSavedToSdriveFail": {
         "message": "登録タスクの予約に失敗しました。"
+    },
+    "popupGoToPageTop": {
+        "message": "ページトップへ"
     }
 }

@@ -107,6 +107,14 @@ Popup.prototype = {
     setImages: function(info) {
         var images = $("images");
         images.innerHTML = "";
+        var div = this.createImageFunctionDiv(images);
+        div.addClassName("image_function_top");
+        this.appendGoto(div, "");
+        var label = document.createElement("div");
+        label.addClassName("label");
+        var message = chrome.i18n.getMessage("popupGoToPageTop");
+        label.appendChild(document.createTextNode(message));
+        div.appendChild(label);
         var urls = info.urls;
         urls.each(function(url) {
             var parent = document.createElement("div");
@@ -119,14 +127,32 @@ Popup.prototype = {
             img.addClassName("content");
             link.appendChild(img);
             parent.appendChild(document.createElement("br"));
-            var div = document.createElement("div");
-            div.addClassName("image_function");
+            div = this.createImageFunctionDiv(parent);
             this.appendTwitter(div, url);
             this.appendFacebook(div, url);
             this.appendDelete(div, url, parent);
+            this.appendGoto(div, url);
             parent.appendChild(div);
             images.appendChild(parent);
         }.bind(this));
+    },
+    createImageFunctionDiv: function(parent) {
+        var div = document.createElement("div");
+        div.addClassName("image_function");
+        parent.appendChild(div);
+        return div;
+    },
+    appendGoto: function(div, url) {
+        var self = this;
+        var img = document.createElement("img");
+        img.setAttribute("src", "./goto.png");
+        img.addClassName("goto");
+        div.appendChild(img);
+        img.onclick = function(url) {
+            return function(evt) {
+                this.bg.ic.goToImage(url);
+            }.bind(self);
+        }.bind(this)(url);
     },
     appendDelete: function(div, url, parent) {
         var self = this;

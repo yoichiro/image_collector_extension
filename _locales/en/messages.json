@@ -190,5 +190,8 @@
     },
     "popupSavedToSdriveFail": {
         "message": "The reservation of the registeration task failed."
+    },
+    "popupGoToPageTop": {
+        "message": "Go to page top"
     }
 }

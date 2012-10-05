@@ -10,23 +10,29 @@ if (typeof CS == "undefined") {
             var images = this.getImages();
             this.sendMessage(images);
             chrome.extension.onMessage.addListener(function(message, sender) {
-                var container = document.getElementById("ics_container");
-                if (!container) {
-                    container = document.createElement("div");
-                    container.id = "ics_container";
-                    container.style.display = "none";
-                    document.body.appendChild(container);
+                var operation = message.operation;
+                if (operation == "download_local") {
+                    var container = document.getElementById("ics_container");
+                    if (!container) {
+                        container = document.createElement("div");
+                        container.id = "ics_container";
+                        container.style.display = "none";
+                        document.body.appendChild(container);
+                    }
+                    var images = message.images;
+                    for (var i = 0; i < images.length; i++) {
+                        var url = images[i];
+                        var link = document.createElement("a");
+                        link.href = url;
+                        link.download = "";
+                        container.appendChild(link);
+                        link.click();
+                    }
+                    document.body.removeChild(container);
+                } else if (operation == "go_to_image") {
+                    var pos = message.pos;
+                    window.scrollTo(-1, pos);
                 }
-                for (var i = 0; i < message.length; i++) {
-                    var url = message[i];
-                    console.log(url);
-                    var link = document.createElement("a");
-                    link.href = url;
-                    link.download = "";
-                    container.appendChild(link);
-                    link.click();
-                }
-                document.body.removeChild(container);
             });
         },
         getImages: function() {
@@ -34,12 +40,14 @@ if (typeof CS == "undefined") {
             var images = new Array();
             for (var i = 0; i < imgs.length; i++) {
                 var imgSrc = imgs[i].src;
+                var top = imgs[i].getBoundingClientRect().top;
                 var img = {
                     tag: "img",
                     url: imgSrc,
                     width: imgs[i].naturalWidth,
                     height: imgs[i].naturalHeight,
-                    hasLink: false
+                    hasLink: false,
+                    pos: top
                 };
                 var parent = imgs[i].parentNode;
                 if (parent.nodeType == Node.ELEMENT_NODE
@@ -50,7 +58,8 @@ if (typeof CS == "undefined") {
                             tag: "a",
                             url: href,
                             width: Number.MAX_VALUE,
-                            height: Number.MAX_VALUE
+                            height: Number.MAX_VALUE,
+                            pos:top
                         });
                         img.hasLink = true;
                     }

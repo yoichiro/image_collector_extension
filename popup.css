@@ -85,7 +85,18 @@ div.service_pane {
 div.image_function {
     width: 165px;
     font-size: 11px;
-    margin-bottom: 3px;
+    height: 20px;
+}
+
+div.image_function_top {
+    margin-top: 2px;
+}
+
+div.image_function div.label {
+    margin-top: 3px;
+    padding-left: 5px;
+    font-size: 11px;
+    float: left;
 }
 
 div.image_function img {
@@ -95,6 +106,11 @@ div.image_function img {
 }
 
 div.image_function img.delete {
+    float: left;
+    margin-left: 8px;
+}
+
+div.image_function img.goto {
     float: left;
     margin-left: 8px;
 }
