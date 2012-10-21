@@ -40,12 +40,14 @@ if (typeof CS == "undefined") {
             var images = new Array();
             for (var i = 0; i < imgs.length; i++) {
                 var imgSrc = imgs[i].src;
+                var width = Math.max(imgs[i].width, imgs[i].naturalWidth);
+                var height = Math.max(imgs[i].height, imgs[i].naturalHeight);
                 var top = imgs[i].getBoundingClientRect().top;
                 var img = {
                     tag: "img",
                     url: imgSrc,
-                    width: imgs[i].naturalWidth,
-                    height: imgs[i].naturalHeight,
+                    width: width,
+                    height: height,
                     hasLink: false,
                     pos: top
                 };

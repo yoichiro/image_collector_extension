@@ -19,6 +19,13 @@ Utils.prototype = {
         for (var key in hash) {
             $(key).innerHTML = chrome.i18n.getMessage(hash[key]);
         }
+    },
+    split: function(source, delimiter) {
+        if (source && source.length > 0) {
+            return source.split(delimiter);
+        } else {
+            return new Array();
+        }
     }
 };
 

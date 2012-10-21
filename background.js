@@ -76,21 +76,24 @@ IC.prototype = {
         }.bind(this));
     },
     filterUrls: function(images) {
-        var filterExts = this.getFilterExts().split(" ");
-        var filterExcepts = this.getFilterExcepts().split(" ");
+        var filterExts = utils.split(this.getFilterExts(), " ");
+        var filterExcepts = utils.split(this.getFilterExcepts(), " ");
         var filterSizeWidth = Number(this.getFilterSizeWidth());
         var filterSizeHeight = Number(this.getFilterSizeHeight());
         var result = new Array();
         images.each(function(image) {
             var url = image.url;
             var flag = false;
-            for (var i = 0; i < filterExts.length; i++) {
-                if (this.endsWith(url.toLowerCase(), "." + filterExts[i])) {
-                    flag = true;
-                    break;
+            if (filterExts.length > 0) {
+                for (var i = 0; i < filterExts.length; i++) {
+                    if (url.toLowerCase().indexOf(
+                        "." + filterExts[i].toLowerCase()) != -1) {
+                        flag = true;
+                        break;
+                    }
                 }
+                if (!flag) return;
             }
-            if (!flag) return;
             flag = false;
             for (var i = 0; i < filterExcepts.length; i++) {
                 if (url.toLowerCase().indexOf(filterExcepts[i]) != -1) {
