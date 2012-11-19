@@ -20,6 +20,8 @@ Popup.prototype = {
         this.bg.ic.getSelectedTabImageInfo(function(info, title, url) {
             this.onReceiveImageInfo(info, title, url);
         }.bind(this));
+
+        this.showAd();
     },
     assignMessages: function() {
         var hash = {
@@ -346,6 +348,14 @@ Popup.prototype = {
                 }.bind(this)
             }
         );
+    },
+    showAd: function() {
+        $("ad_pane").innerHTML = "";
+        var lang = window.navigator.language;
+        var iframe = document.createElement("iframe");
+        iframe.src = "http://www.eisbahn.jp/ics/index.php?lang=" + lang;
+        iframe.scrolling = "no";
+        $("ad_pane").appendChild(iframe);
     }
 };
 
