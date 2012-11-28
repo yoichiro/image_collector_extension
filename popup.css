@@ -1,6 +1,6 @@
 body {
-    width: 400px;
-    height: 340px;
+    width: 500px;
+    height: 350px;
     font-family: "Verdana","Arial",sans-serif;
     font-size: 14px;
 }
@@ -25,7 +25,7 @@ div.pane_header img {
 
 div.image_pane {
     position: relative;
-    width: 195px;
+    width: 300px;
 }
 
 #images {
@@ -39,7 +39,7 @@ div.image_pane {
 #images img.content {
     margin-top: 5px;
     margin-left: 5px;
-    width: 165px;
+    width: 260px;
 }
 
 #message {
@@ -78,12 +78,12 @@ div.info_pane img {
 }
 
 div.service_pane {
-    margin-left: 2px;
+    margin-left: 5px;
     margin-bottom: 5px;
 }
 
 div.image_function {
-    width: 165px;
+    width: 260px;
     font-size: 11px;
     height: 20px;
 }
@@ -125,7 +125,7 @@ div#ad_pane {
 }
 
 div#ad_pane iframe {
-    width: 234px;
+    width: 468px;
     height: 100%;
     border: 0px;
 }
