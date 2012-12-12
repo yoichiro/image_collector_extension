@@ -8,6 +8,7 @@ IC.prototype = {
     initialize: function() {
         this.tabs = {};
         this.setupEventHandler();
+        this.setupContextMenus();
         this.establishSession();
     },
     getServerUrl: function() {
@@ -15,13 +16,25 @@ IC.prototype = {
     },
     setupEventHandler: function() {
         chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab) {
-            this.onSelectionChanged(id);
+            if (changeInfo.status == "complete") {
+                this.onSelectionChanged(id);
+            }
         }.bind(this));
         chrome.extension.onRequest.addListener(
             function(message, sender, sendRequest) {
                 this.onRequest(message, sender.tab, sendRequest);
             }.bind(this)
         );
+    },
+    setupContextMenus: function() {
+        chrome.contextMenus.create({
+            type: "normal",
+            title: chrome.i18n.getMessage("menuReloadImages"),
+            contexts: ["page"],
+            onclick: function(info, tab) {
+                this.reloadImages(tab);
+            }.bind(this)
+        });
     },
     establishSession: function() {
         var url = IC.SERVER_URL + "ajax/create_session";
@@ -59,13 +72,29 @@ IC.prototype = {
                 images: message.images
             };
             chrome.pageAction.show(tab.id);
+            chrome.pageAction.setTitle({
+                tabId: tab.id,
+                title: String(urls.length) + " images"
+            });
         } else {
             delete this.tabs[tab.id];
             chrome.pageAction.hide(tab.id);
+            chrome.pageAction.setTitle({
+                tabId: tab.id,
+                title: ""
+            });
         }
         sendRequest({});
     },
+    reloadImages: function(tab) {
+        delete this.tabs[tab.id];
+        chrome.pageAction.hide(tab.id);
+        this.executeContentScript(tab.id);
+    },
     onSelectionChanged: function(tabId) {
+        this.executeContentScript(tabId);
+    },
+    executeContentScript: function(tabId) {
         chrome.tabs.executeScript(tabId, {
             file: "content_script.js"
         });

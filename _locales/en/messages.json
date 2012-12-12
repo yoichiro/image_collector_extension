@@ -193,5 +193,8 @@
     },
     "popupGoToPageTop": {
         "message": "Go to page top"
+    },
+    "menuReloadImages": {
+        "message": "Reload images"
     }
 }

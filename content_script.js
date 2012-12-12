@@ -75,7 +75,7 @@ if (typeof CS == "undefined") {
             chrome.extension.sendRequest(message);
         }
     };
-
-    var cs = new CS();
-    cs.start();
 }
+
+var cs = new CS();
+cs.start();
