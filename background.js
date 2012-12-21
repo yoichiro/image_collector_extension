@@ -65,17 +65,22 @@ IC.prototype = {
         return localStorage["session_token"];
     },
     onRequest: function(message, tab, sendRequest) {
-        var urls = this.filterUrls(message.images);
+        var filteredImages = this.filterUrls(message.images);
+        var urls = filteredImages.collect(function(image) {
+            return image.url;
+        });
         if (urls.length > 0) {
             this.tabs[tab.id] = {
                 urls: urls,
-                images: message.images
+                images: message.images,
+                filtered: filteredImages
             };
             chrome.pageAction.show(tab.id);
             chrome.pageAction.setTitle({
                 tabId: tab.id,
                 title: String(urls.length) + " images"
             });
+            this.previewImages(filteredImages, tab);
         } else {
             delete this.tabs[tab.id];
             chrome.pageAction.hide(tab.id);
@@ -138,7 +143,7 @@ IC.prototype = {
             if (image.tag == "img") {
                 if (this.isPriorityLinkHref() && image.hasLink) return;
             }
-            result.push(url);
+            result.push(image);
         }.bind(this));
         return result;
     },
@@ -301,6 +306,19 @@ IC.prototype = {
                 pos: pos
             });
         }.bind(this));
+    },
+    previewImages: function(images, tab) {
+        var previewPosition = this.getPreviewPosition();
+        if (previewPosition != "none") {
+            chrome.tabs.sendMessage(tab.id, {
+                operation: "preview_images",
+                images: images,
+                position: previewPosition
+            });
+        }
+    },
+    getPreviewPosition: function() {
+        return utils.getOptionValue("preview_position", "bottom_right");
     }
 };
 

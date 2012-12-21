@@ -140,6 +140,27 @@
     "optStatImageCount": {
         "message": "総イメージ数"
     },
+    "optPreview": {
+        "message": "ホットプレビュー"
+    },
+    "optPreviewLocation": {
+        "message": "表示位置"
+    },
+    "optPreviewNone": {
+        "message": "表示しない"
+    },
+    "optPreviewTopLeft": {
+        "message": "左上"
+    },
+    "optPreviewTopRight": {
+        "message": "右上"
+    },
+    "optPreviewBottomLeft": {
+        "message": "左下"
+    },
+    "optPreviewBottomRight": {
+        "message": "右下"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },

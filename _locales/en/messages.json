@@ -140,6 +140,27 @@
     "optStatImageCount": {
         "message": "All image count"
     },
+    "optPreview": {
+        "message": "Hot preview"
+    },
+    "optPreviewLocation": {
+        "message": "Display position"
+    },
+    "optPreviewNone": {
+        "message": "None"
+    },
+    "optPreviewTopLeft": {
+        "message": "Top left"
+    },
+    "optPreviewTopRight": {
+        "message": "Top right"
+    },
+    "optPreviewBottomLeft": {
+        "message": "Bottom left"
+    },
+    "optPreviewBottomRight": {
+        "message": "Bottom right"
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },

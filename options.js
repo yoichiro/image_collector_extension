@@ -10,6 +10,7 @@ Options.prototype = {
         }.bind(this));
     },
     start: function() {
+        this.setupUIs();
         this.assignMessages();
         this.assignEventHandlers();
         this.restoreConfigurations();
@@ -17,6 +18,20 @@ Options.prototype = {
         this.checkGDriveAuthorized();
         this.checkSDriveAuthorized();
         this.loadMonitor();
+    },
+    setupUIs: function() {
+        var previewPosition = $("preview_position");
+        this.createAndAppendOption("none", "optPreviewNone", previewPosition);
+        this.createAndAppendOption("top_left", "optPreviewTopLeft", previewPosition);
+        this.createAndAppendOption("top_right", "optPreviewTopRight", previewPosition);
+        this.createAndAppendOption("bottom_left", "optPreviewBottomLeft", previewPosition);
+        this.createAndAppendOption("bottom_right", "optPreviewBottomRight", previewPosition);
+    },
+    createAndAppendOption: function(value, resourceKey, parent) {
+        var option = document.createElement("option");
+        option.value = value;
+        option.appendChild(document.createTextNode(chrome.i18n.getMessage(resourceKey)));
+        parent.appendChild(option);
     },
     assignMessages: function() {
         var hash = {
@@ -60,8 +75,10 @@ Options.prototype = {
             "sdrive_authorized": "optSDriveAuthorized",
             "sdrive_unauthorized": "optSDriveUnauthorized",
             "auth_sdrive": "optAuthSDrive",
-            "cancel_sdrive": "optCancelSDrive"
-        };
+            "cancel_sdrive": "optCancelSDrive",
+            "optPreview": "optPreview",
+            "optPreviewLocation": "optPreviewLocation"
+          };
         utils.setMessageResources(hash);
     },
     assignEventHandlers: function() {
@@ -91,6 +108,8 @@ Options.prototype = {
             this.onClickAuthSDrive.bind(this);
         $("cancel_sdrive").onclick =
             this.onClickCancelSDrive.bind(this);
+        $("preview_position").onchange =
+            this.onChangePreviewPosition.bind(this);
     },
     restoreConfigurations: function() {
         $("command_template").value = this.bg.ic.getCommandTemplate();
@@ -101,6 +120,7 @@ Options.prototype = {
         $("priority_link_href").checked = this.bg.ic.isPriorityLinkHref();
         $("download_filename").value = this.bg.ic.getDownloadFilename();
         $("without_creating_folder").checked = this.bg.ic.isWithoutCreatingFolder();
+        $("preview_position").value = this.bg.ic.getPreviewPosition();
     },
     checkDropboxAuthorized: function() {
         this.bg.ic.checkDropboxAuthorized({
@@ -259,6 +279,10 @@ Options.prototype = {
         var num = new String(value).replace(/,/g, "");
         while (num != (num = num.replace(/^(-?\d+)(\d{3})/, "$1,$2")));
         return num;
+    },
+    onChangePreviewPosition: function() {
+        var value = $("preview_position").value;
+        localStorage["preview_position"] = value;
     }
 };
 
