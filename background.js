@@ -65,29 +65,33 @@ IC.prototype = {
         return localStorage["session_token"];
     },
     onRequest: function(message, tab, sendRequest) {
-        var filteredImages = this.filterUrls(message.images);
-        var urls = filteredImages.collect(function(image) {
-            return image.url;
-        });
-        if (urls.length > 0) {
-            this.tabs[tab.id] = {
-                urls: urls,
-                images: message.images,
-                filtered: filteredImages
-            };
-            chrome.pageAction.show(tab.id);
-            chrome.pageAction.setTitle({
-                tabId: tab.id,
-                title: String(urls.length) + " images"
+        if (message.type == "parsed_images") {
+            var filteredImages = this.filterUrls(message.images);
+            var urls = filteredImages.collect(function(image) {
+                return image.url;
             });
-            this.previewImages(filteredImages, tab);
-        } else {
-            delete this.tabs[tab.id];
-            chrome.pageAction.hide(tab.id);
-            chrome.pageAction.setTitle({
-                tabId: tab.id,
-                title: ""
-            });
+            if (urls.length > 0) {
+                this.tabs[tab.id] = {
+                    urls: urls,
+                    images: message.images,
+                    filtered: filteredImages
+                };
+                chrome.pageAction.show(tab.id);
+                chrome.pageAction.setTitle({
+                    tabId: tab.id,
+                    title: String(urls.length) + " images"
+                });
+                this.previewImages(filteredImages, tab);
+            } else {
+                delete this.tabs[tab.id];
+                chrome.pageAction.hide(tab.id);
+                chrome.pageAction.setTitle({
+                    tabId: tab.id,
+                    title: ""
+                });
+            }
+        } else if (message.type == "disable_button") {
+            chrome.pageAction.hide(message.tabId);
         }
         sendRequest({});
     },
@@ -313,7 +317,8 @@ IC.prototype = {
             chrome.tabs.sendMessage(tab.id, {
                 operation: "preview_images",
                 images: images,
-                position: previewPosition
+                position: previewPosition,
+                tabId: tab.id
             });
         }
     },

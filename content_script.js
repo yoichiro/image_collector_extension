@@ -9,14 +9,12 @@ if (typeof CS == "undefined") {
         start: function() {
             var self = this;
             var images = this.getImages();
-            this.sendMessage(images);
-            chrome.extension.onMessage.addListener((function() {
-                return function() {
-                    (function(message, sender) {
-                        this.onReceiveMessage(message, sender);
-                    }).apply(self, arguments);
-                };
-            })());
+            this.sendImagesMessage(images);
+            chrome.extension.onMessage.addListener(
+                this.hitch(function(message, sender) {
+                    this.onReceiveMessage(message, sender);
+                })
+            );
         },
         onReceiveMessage: function(message, sender) {
             var operation = message.operation;
@@ -43,7 +41,8 @@ if (typeof CS == "undefined") {
             } else if (operation == "preview_images") {
                 var images = message.images;
                 var position = message.position;
-                this.previewImages(images, position);
+                var tabId = message.tabId;
+                this.previewImages(images, position, tabId);
             }
         },
         getImages: function() {
@@ -84,15 +83,18 @@ if (typeof CS == "undefined") {
             }
             return images;
         },
-        sendMessage: function(images) {
-            var message = {images: images};
+        sendImagesMessage: function(images) {
+            var message = {
+                type: "parsed_images",
+                images: images
+            };
             chrome.extension.sendRequest(message);
         },
-        previewImages: function(images, position) {
+        previewImages: function(images, position, tabId) {
             var panel = this.createPreviewPanel(position);
             document.body.appendChild(panel);
             this.createPreviewClose(panel);
-            this.createPreviewImages(images, panel);
+            this.createPreviewImages(images, panel, tabId);
         },
         createPreviewPanel: function(position) {
             var panel = document.getElementById("ics_preview_panel");
@@ -120,7 +122,8 @@ if (typeof CS == "undefined") {
             }
             return panel;
         },
-        createPreviewImages: function(images, panel) {
+        createPreviewImages: function(images, panel, tabId) {
+            var failedImageCount = 0;
             for (var i = 0; i < images.length; i++) {
                 var img = document.createElement("img");
                 img.src = images[i].url;
@@ -137,14 +140,31 @@ if (typeof CS == "undefined") {
                         window.scrollTo(-1, pos);
                     };
                 })(images[i]);
+                img.onerror = this.hitch(function() {
+                    failedImageCount++;
+                    if (failedImageCount >= images.length) {
+                        document.body.removeChild(panel);
+                        this.sendDisableButtonMessage(tabId);
+                    }
+                });
                 if (i == images.length - 1) {
-                    img.onload = function() {
-                        var clientHeight = document.documentElement.clientHeight;
-                        if (panel.clientHeight > (clientHeight / 2)) {
-                            panel.style.height = String(clientHeight / 2) + "px";
-                        }
-                    };
+                    img.onload = this.hitch(function() {
+                        this.adjustPreviewPanelHeight(panel);
+                    });
                 }
+            }
+        },
+        sendDisableButtonMessage: function(tabId) {
+            var message = {
+                type: "disable_button",
+                tabId: tabId
+            };
+            chrome.extension.sendRequest(message);
+        },
+        adjustPreviewPanelHeight: function(panel) {
+            var clientHeight = document.documentElement.clientHeight;
+            if (panel.clientHeight > (clientHeight / 2)) {
+                panel.style.height = String(clientHeight / 2) + "px";
             }
         },
         createPreviewClose: function(panel) {
@@ -158,6 +178,12 @@ if (typeof CS == "undefined") {
             panel.appendChild(close);
             close.onclick = function(evt) {
                 document.body.removeChild(panel);
+            };
+        },
+        hitch: function(f) {
+            var self = this;
+            return function() {
+                f.apply(self, arguments);
             };
         }
     };
