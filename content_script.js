@@ -50,6 +50,9 @@ if (typeof CS == "undefined") {
             var imgs = document.getElementsByTagName("img");
             var images = new Array();
             for (var i = 0; i < imgs.length; i++) {
+                if (imgs[i].dataset.ics) {
+                    continue;
+                }
                 var imgSrc = imgs[i].src;
                 var width = Math.max(imgs[i].width, imgs[i].naturalWidth);
                 var height = Math.max(imgs[i].height, imgs[i].naturalHeight);
@@ -92,23 +95,29 @@ if (typeof CS == "undefined") {
             this.createPreviewImages(images, panel);
         },
         createPreviewPanel: function(position) {
-            var panel = document.createElement("div");
-            panel.style.position = "fixed";
-            panel.style.width = "70px";
-            if (position.indexOf("top") != -1) {
-                panel.style.top = 0;
+            var panel = document.getElementById("ics_preview_panel");
+            if (panel) {
+                panel.innerHTML = "";
+            } else {
+                panel = document.createElement("div");
+                panel.id = "ics_preview_panel";
+                panel.style.position = "fixed";
+                panel.style.width = "70px";
+                if (position.indexOf("top") != -1) {
+                    panel.style.top = 0;
+                }
+                if (position.indexOf("bottom") != -1) {
+                    panel.style.bottom = 0;
+                }
+                if (position.indexOf("left") != -1) {
+                    panel.style.left = 0;
+                }
+                if (position.indexOf("right") != -1) {
+                    panel.style.right = 0;
+                }
+                panel.style.overflow = "auto";
+                panel.style.paddingBottom = "5px";
             }
-            if (position.indexOf("bottom") != -1) {
-                panel.style.bottom = 0;
-            }
-            if (position.indexOf("left") != -1) {
-                panel.style.left = 0;
-            }
-            if (position.indexOf("right") != -1) {
-                panel.style.right = 0;
-            }
-            panel.style.overflow = "auto";
-            panel.style.paddingBottom = "5px";
             return panel;
         },
         createPreviewImages: function(images, panel) {
@@ -120,6 +129,7 @@ if (typeof CS == "undefined") {
                 img.style.marginRight = "5px";
                 img.style.marginTop = "5px";
                 img.style.cursor = "pointer";
+                img.dataset.ics = "true";
                 panel.appendChild(img);
                 img.onclick = (function(image) {
                     return function(evt) {
