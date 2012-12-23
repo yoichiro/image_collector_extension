@@ -133,25 +133,28 @@ if (typeof CS == "undefined") {
                 img.style.marginTop = "5px";
                 img.style.cursor = "pointer";
                 img.dataset.ics = "true";
-                panel.appendChild(img);
                 img.onclick = (function(image) {
                     return function(evt) {
                         var pos = image.pos;
                         window.scrollTo(-1, pos);
                     };
                 })(images[i]);
-                img.onerror = this.hitch(function() {
-                    failedImageCount++;
-                    if (failedImageCount >= images.length) {
-                        document.body.removeChild(panel);
-                        this.sendDisableButtonMessage(tabId);
+                img.onerror = this.hitch((function(img) {
+                    return function() {
+                        panel.removeChild(img);
+                        failedImageCount++;
+                        if (failedImageCount >= images.length) {
+                            document.body.removeChild(panel);
+                            this.sendDisableButtonMessage(tabId);
+                        }
                     }
-                });
+                })(img));
                 if (i == images.length - 1) {
                     img.onload = this.hitch(function() {
                         this.adjustPreviewPanelHeight(panel);
                     });
                 }
+                panel.appendChild(img);
             }
         },
         sendDisableButtonMessage: function(tabId) {
