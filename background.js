@@ -92,6 +92,8 @@ IC.prototype = {
             }
         } else if (message.type == "disable_button") {
             chrome.pageAction.hide(message.tabId);
+        } else if (message.type == "dismiss_hotpreview") {
+            localStorage["preview_position"] = "none";
         }
         sendRequest({});
     },

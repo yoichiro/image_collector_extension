@@ -95,6 +95,7 @@ if (typeof CS == "undefined") {
             document.body.appendChild(panel);
             this.createPreviewClose(panel);
             this.createPreviewImages(images, panel, tabId);
+            this.createPreviewOption(panel);
         },
         createPreviewPanel: function(position) {
             var panel = document.getElementById("ics_preview_panel");
@@ -164,6 +165,12 @@ if (typeof CS == "undefined") {
             };
             chrome.extension.sendRequest(message);
         },
+        sendDismissHotPreviewMessage: function() {
+            var message = {
+                type: "dismiss_hotpreview"
+            };
+            chrome.extension.sendRequest(message);
+        },
         adjustPreviewPanelHeight: function(panel) {
             var clientHeight = document.documentElement.clientHeight;
             if (panel.clientHeight > (clientHeight / 2)) {
@@ -171,17 +178,35 @@ if (typeof CS == "undefined") {
             }
         },
         createPreviewClose: function(panel) {
-            var close = document.createElement("div");
-            close.style.textAlign = "center";
-            close.style.textDecoration = "underline";
-            close.style.cursor = "pointer";
-            close.style.fontSize = "9px";
-            close.style.marginTop = "5px";
-            close.appendChild(document.createTextNode("Close"));
+            var close = this.createLinkDiv("Hide");
             panel.appendChild(close);
             close.onclick = function(evt) {
                 document.body.removeChild(panel);
             };
+        },
+        createPreviewOption: function(panel) {
+            var option = this.createLinkDiv("Option");
+            panel.appendChild(option);
+            option.onclick = function(evt) {
+                var url = chrome.extension.getURL("options.html");
+                location.href = url;
+            };
+            var dismiss = this.createLinkDiv("Dismiss");
+            panel.appendChild(dismiss);
+            dismiss.onclick = this.hitch(function(evt) {
+                this.sendDismissHotPreviewMessage();
+                document.body.removeChild(panel);
+            });
+        },
+        createLinkDiv: function(label) {
+            var link = document.createElement("div");
+            link.style.textAlign = "center";
+            link.style.textDecoration = "underline";
+            link.style.cursor = "pointer";
+            link.style.fontSize = "9px";
+            link.style.marginTop = "5px";
+            link.appendChild(document.createTextNode(label));
+            return link;
         },
         hitch: function(f) {
             var self = this;
