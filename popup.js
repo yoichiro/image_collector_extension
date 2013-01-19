@@ -211,19 +211,19 @@ Popup.prototype = {
             "width=680,height=360");
     },
     setSaveLink: function(script, title) {
-        var blobBuilder = new WebKitBlobBuilder();
-        blobBuilder.append(script);
+        var blob = new Blob([script], {type: "octet/stream"});
         var a = document.getElementById("ics_script_link");
         if (a) {
             $("command_pane").removeChild(a);
         }
         a = document.createElement("a");
         a.id = "ics_script_link";
-        a.href = window.webkitURL.createObjectURL(blobBuilder.getBlob());
+        a.href = window.webkitURL.createObjectURL(blob);
         var filename = this.bg.ic.getDownloadFilename();
         filename = filename.replace("$tabname", title);
         a.download = filename;
         a.onclick = function(evt) {
+            _gaq.push(['_trackEvent', 'Popup', 'Script']);
             var message = chrome.i18n.getMessage("popupSavedFile");
             this.showMessage(message);
             return true;
@@ -239,6 +239,7 @@ Popup.prototype = {
         }.bind(this), 5000);
     },
     onClickDropbox: function(evt) {
+        _gaq.push(['_trackEvent', 'Popup', 'Dropbox']);
         Element.setStyle($("btnDropbox"),
                          {display: "none"});
         this.bg.ic.saveToDropbox(
@@ -262,6 +263,7 @@ Popup.prototype = {
         );
     },
     onClickGdrive: function(evt) {
+        _gaq.push(['_trackEvent', 'Popup', 'GoogleDrive']);
         Element.setStyle($("btnGdrive"),
                          {display: "none"});
         this.bg.ic.saveToGDrive(
@@ -285,6 +287,7 @@ Popup.prototype = {
         );
     },
     onClickSdrive: function(evt) {
+        _gaq.push(['_trackEvent', 'Popup', 'SkyDrive']);
         Element.setStyle($("btnSdrive"),
                          {display: "none"});
         this.bg.ic.saveToSDrive(
@@ -329,6 +332,7 @@ Popup.prototype = {
         });
     },
     onClickLocal: function(evt) {
+        _gaq.push(['_trackEvent', 'Popup', 'DownloadLocal']);
         Element.setStyle($("btnLocal"),
                          {display: "none"});
         this.bg.ic.saveToLocal(
