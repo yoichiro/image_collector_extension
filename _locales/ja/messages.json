@@ -215,6 +215,9 @@
     "popupGoToPageTop": {
         "message": "ページトップへ"
     },
+    "popupBtnSlideShow": {
+        "message": "開始する"
+    },
     "menuReloadImages": {
         "message": "画像の再読み込み"
     }

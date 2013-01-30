@@ -215,6 +215,9 @@
     "popupGoToPageTop": {
         "message": "Go to page top"
     },
+    "popupBtnSlideShow": {
+        "message": "Start slide-show"
+    },
     "menuReloadImages": {
         "message": "Reload images"
     }

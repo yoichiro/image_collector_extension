@@ -115,6 +115,9 @@ IC.prototype = {
             callback(this.tabs[tab.id], tab.title, tab.url);
         }.bind(this));
     },
+    getTabImageInfo: function(tabId) {
+        return this.tabs[tabId];
+    },
     filterUrls: function(images) {
         var filterExts = utils.split(this.getFilterExts(), " ");
         var filterExcepts = utils.split(this.getFilterExcepts(), " ");
@@ -326,6 +329,17 @@ IC.prototype = {
     },
     getPreviewPosition: function() {
         return utils.getOptionValue("preview_position", "bottom_right");
+    },
+    startSlideShow: function(callback) {
+        chrome.tabs.getSelected(null, function(tab) {
+            var url = chrome.extension.getURL(
+                "slideshow/slideshow.html?tab_id=" + tab.id);
+            chrome.tabs.create({
+                url: url
+            }, function(tab) {
+                callback();
+            });
+        });
     }
 };
 

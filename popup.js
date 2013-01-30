@@ -32,7 +32,8 @@ Popup.prototype = {
             "btnAuthGdrive": "popupBtnAuthGdrive",
             "btnSdrive": "popupBtnSdrive",
             "btnAuthSdrive": "popupBtnAuthSdrive",
-            "btnLocal": "popupBtnSave"
+            "btnLocal": "popupBtnSave",
+            "btnSlideShow": "popupBtnSlideShow"
         };
         utils.setMessageResources(hash);
     },
@@ -44,6 +45,7 @@ Popup.prototype = {
         $("btnSdrive").onclick = this.onClickSdrive.bind(this);
         $("btnAuthSdrive").onclick = this.onClickAuthSdrive.bind(this);
         $("btnLocal").onclick = this.onClickLocal.bind(this);
+        $("btnSlideShow").onclick = this.onClickSlideShow.bind(this);
         this.bg.ic.checkDropboxAuthorized({
             onSuccess: function(req) {
                 var result = req.responseJSON.result;
@@ -360,6 +362,12 @@ Popup.prototype = {
         iframe.src = "http://www.eisbahn.jp/ics/index.php?lang=" + lang;
         iframe.scrolling = "no";
         $("ad_pane").appendChild(iframe);
+    },
+    onClickSlideShow: function(evt) {
+        _gaq.push(['_trackEvent', 'Popup', 'SlideShow']);
+        this.bg.ic.startSlideShow(function() {
+            window.close();
+        });
     }
 };
 
