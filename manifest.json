@@ -2,13 +2,14 @@
     "manifest_version": 2,
     "name": "Image collector extension",
     "description": "__MSG_extDescription__",
-    "version": "6.0.0",
+    "version": "6.0.1",
     "icons": {
         "48": "icon48.png",
         "128": "icon128.png"
     },
     "background": {
-        "page": "background.html"
+        "page": "background.html",
+        "persistent": false
     },
     "default_locale": "en",
     "page_action": {

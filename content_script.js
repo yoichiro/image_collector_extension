@@ -88,7 +88,7 @@ if (typeof CS == "undefined") {
                 type: "parsed_images",
                 images: images
             };
-            chrome.extension.sendRequest(message);
+            chrome.extension.sendMessage(message);
         },
         previewImages: function(images, position, tabId) {
             var panel = this.createPreviewPanel(position);
@@ -163,13 +163,13 @@ if (typeof CS == "undefined") {
                 type: "disable_button",
                 tabId: tabId
             };
-            chrome.extension.sendRequest(message);
+            chrome.extension.sendMessage(message);
         },
         sendDismissHotPreviewMessage: function() {
             var message = {
                 type: "dismiss_hotpreview"
             };
-            chrome.extension.sendRequest(message);
+            chrome.extension.sendMessage(message);
         },
         adjustPreviewPanelHeight: function(panel) {
             var clientHeight = document.documentElement.clientHeight;

@@ -5,7 +5,6 @@ var SlideShow = function() {
 SlideShow.prototype = {
     initialize: function() {
         this.loadedImageCount = 0;
-        this.bg = chrome.extension.getBackgroundPage();
         this.assignEventHandlers();
     },
     getClientSize: function() {
@@ -19,10 +18,12 @@ SlideShow.prototype = {
         }, this));
     },
     loadImages: function() {
-        var qs = this.getQueryStrings();
-        var tabId = qs["tab_id"];
-        var info = this.bg.ic.getTabImageInfo(tabId);
-        this.createImages(info);
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var qs = this.getQueryStrings();
+            var tabId = qs["tab_id"];
+            var info = bg.ic.getTabImageInfo(tabId);
+            this.createImages(info);
+        }.bind(this));
     },
     createImages: function(info) {
         var imageCount = info.urls.length;

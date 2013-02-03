@@ -4,7 +4,6 @@ var Options = function() {
 
 Options.prototype = {
     initialize: function() {
-        this.bg = chrome.extension.getBackgroundPage();
         window.addEventListener("load", function(evt) {
             this.start();
         }.bind(this));
@@ -112,48 +111,56 @@ Options.prototype = {
             this.onChangePreviewPosition.bind(this);
     },
     restoreConfigurations: function() {
-        $("command_template").value = this.bg.ic.getCommandTemplate();
-        $("filter_exts").value = this.bg.ic.getFilterExts();
-        $("filter_excepts").value = this.bg.ic.getFilterExcepts();
-        $("filter_size_width").value = this.bg.ic.getFilterSizeWidth();
-        $("filter_size_height").value = this.bg.ic.getFilterSizeHeight();
-        $("priority_link_href").checked = this.bg.ic.isPriorityLinkHref();
-        $("download_filename").value = this.bg.ic.getDownloadFilename();
-        $("without_creating_folder").checked = this.bg.ic.isWithoutCreatingFolder();
-        $("preview_position").value = this.bg.ic.getPreviewPosition();
+        chrome.runtime.getBackgroundPage(function(bg) {
+            $("command_template").value = bg.ic.getCommandTemplate();
+            $("filter_exts").value = bg.ic.getFilterExts();
+            $("filter_excepts").value = bg.ic.getFilterExcepts();
+            $("filter_size_width").value = bg.ic.getFilterSizeWidth();
+            $("filter_size_height").value = bg.ic.getFilterSizeHeight();
+            $("priority_link_href").checked = bg.ic.isPriorityLinkHref();
+            $("download_filename").value = bg.ic.getDownloadFilename();
+            $("without_creating_folder").checked = bg.ic.isWithoutCreatingFolder();
+            $("preview_position").value = bg.ic.getPreviewPosition();
+        });
     },
     checkDropboxAuthorized: function() {
-        this.bg.ic.checkDropboxAuthorized({
-            onSuccess: function(req) {
-                var result = req.responseJSON.result;
-                utils.setVisible($("dropbox_authorized"), result);
-                utils.setVisible($("dropbox_unauthorized"), !result);
-                utils.setVisible($("auth_dropbox"), !result);
-                utils.setVisible($("cancel_dropbox"), result);
-            }.bind(this)
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.checkDropboxAuthorized({
+                onSuccess: function(req) {
+                    var result = req.responseJSON.result;
+                    utils.setVisible($("dropbox_authorized"), result);
+                    utils.setVisible($("dropbox_unauthorized"), !result);
+                    utils.setVisible($("auth_dropbox"), !result);
+                    utils.setVisible($("cancel_dropbox"), result);
+                }.bind(this)
+            });
+        }.bind(this));
     },
     checkGDriveAuthorized: function() {
-        this.bg.ic.checkGDriveAuthorized({
-            onSuccess: function(req) {
-                var result = req.responseJSON.result;
-                utils.setVisible($("gdrive_authorized"), result);
-                utils.setVisible($("gdrive_unauthorized"), !result);
-                utils.setVisible($("auth_gdrive"), !result);
-                utils.setVisible($("cancel_gdrive"), result);
-            }.bind(this)
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.checkGDriveAuthorized({
+                onSuccess: function(req) {
+                    var result = req.responseJSON.result;
+                    utils.setVisible($("gdrive_authorized"), result);
+                    utils.setVisible($("gdrive_unauthorized"), !result);
+                    utils.setVisible($("auth_gdrive"), !result);
+                    utils.setVisible($("cancel_gdrive"), result);
+                }.bind(this)
+            });
+        }.bind(this));
     },
     checkSDriveAuthorized: function() {
-        this.bg.ic.checkSDriveAuthorized({
-            onSuccess: function(req) {
-                var result = req.responseJSON.result;
-                utils.setVisible($("sdrive_authorized"), result);
-                utils.setVisible($("sdrive_unauthorized"), !result);
-                utils.setVisible($("auth_sdrive"), !result);
-                utils.setVisible($("cancel_sdrive"), result);
-            }.bind(this)
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.checkSDriveAuthorized({
+                onSuccess: function(req) {
+                    var result = req.responseJSON.result;
+                    utils.setVisible($("sdrive_authorized"), result);
+                    utils.setVisible($("sdrive_unauthorized"), !result);
+                    utils.setVisible($("auth_sdrive"), !result);
+                    utils.setVisible($("cancel_sdrive"), result);
+                }.bind(this)
+            });
+        }.bind(this));
     },
     onClickCommandTemplateSave: function(evt) {
         localStorage["command_template"] = $("command_template").value;
@@ -209,71 +216,85 @@ Options.prototype = {
         localStorage[name] = $(name).checked ? "true" : "";
     },
     onClickAuthDropbox: function(evt) {
-        location.href = this.bg.ic.getDropboxAuthUrl();
+        chrome.runtime.getBackgroundPage(function(bg) {
+            location.href = bg.ic.getDropboxAuthUrl();
+        });
     },
     onClickCancelDropbox: function(evt) {
-        this.bg.ic.cancelDropbox({
-            onSuccess: function(req) {
-                this.checkDropboxAuthorized();
-            }.bind(this),
-            onFailure: function(req) {
-                this.checkDropboxAuthorized();
-            }.bind(this)
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.cancelDropbox({
+                onSuccess: function(req) {
+                    this.checkDropboxAuthorized();
+                }.bind(this),
+                onFailure: function(req) {
+                    this.checkDropboxAuthorized();
+                }.bind(this)
+            });
+        }.bind(this));
     },
     onClickCancelGDrive: function(evt) {
-        this.bg.ic.cancelGDrive({
-            onSuccess: function(req) {
-                this.checkGDriveAuthorized();
-            }.bind(this),
-            onFailure: function(req) {
-                this.checkGDriveAuthorized();
-            }.bind(this)
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.cancelGDrive({
+                onSuccess: function(req) {
+                    this.checkGDriveAuthorized();
+                }.bind(this),
+                onFailure: function(req) {
+                    this.checkGDriveAuthorized();
+                }.bind(this)
+            });
+        }.bind(this));
     },
     onClickCancelSDrive: function(evt) {
-        this.bg.ic.cancelSDrive({
-            onSuccess: function(req) {
-                this.checkSDriveAuthorized();
-            }.bind(this),
-            onFailure: function(req) {
-                this.checkSDriveAuthorized();
-            }.bind(this)
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.cancelSDrive({
+                onSuccess: function(req) {
+                    this.checkSDriveAuthorized();
+                }.bind(this),
+                onFailure: function(req) {
+                    this.checkSDriveAuthorized();
+                }.bind(this)
+            });
+        }.bind(this));
     },
     onClickAuthGDrive: function(evt) {
-        var token = this.bg.ic.getSessionToken();
-        var optionUrl = chrome.extension.getURL("options.html");
-        var url =
-            this.bg.ic.getServerUrl() + "auth_gdrive?"
-            + "token=" + token
-            + "&callback=" + encodeURIComponent(optionUrl);
-        location.href = url;
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var token = bg.ic.getSessionToken();
+            var optionUrl = chrome.extension.getURL("options.html");
+            var url =
+                bg.ic.getServerUrl() + "auth_gdrive?"
+                + "token=" + token
+                + "&callback=" + encodeURIComponent(optionUrl);
+            location.href = url;
+        });
     },
     onClickAuthSDrive: function(evt) {
-        var token = this.bg.ic.getSessionToken();
-        var optionUrl = chrome.extension.getURL("options.html");
-        var url =
-            this.bg.ic.getServerUrl() + "auth_sdrive?"
-            + "token=" + token
-            + "&callback=" + encodeURIComponent(optionUrl);
-        location.href = url;
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var token = bg.ic.getSessionToken();
+            var optionUrl = chrome.extension.getURL("options.html");
+            var url =
+                bg.ic.getServerUrl() + "auth_sdrive?"
+                + "token=" + token
+                + "&callback=" + encodeURIComponent(optionUrl);
+            location.href = url;
+        });
     },
     onClickWithoutCreatingFolder: function() {
         this.changeCheckboxConfiguration("without_creating_folder");
     },
     loadMonitor: function() {
-        this.bg.ic.loadMonitor({
-            onSuccess: function(req) {
-                var result = req.responseJSON;
-                $("stat_remaining_job_count").innerText =
-                    this.addFigure(result.job_count);
-                $("stat_page_count").innerText =
-                    this.addFigure(result.page_count);
-                $("stat_image_count").innerText =
-                    this.addFigure(result.image_count);
-            }.bind(this)
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.loadMonitor({
+                onSuccess: function(req) {
+                    var result = req.responseJSON;
+                    $("stat_remaining_job_count").innerText =
+                        this.addFigure(result.job_count);
+                    $("stat_page_count").innerText =
+                        this.addFigure(result.page_count);
+                    $("stat_image_count").innerText =
+                        this.addFigure(result.image_count);
+                }.bind(this)
+            });
+        }.bind(this));
     },
     addFigure: function(value) {
         var num = new String(value).replace(/,/g, "");

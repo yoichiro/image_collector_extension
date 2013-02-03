@@ -6,7 +6,7 @@ IC.SERVER_URL = "http://ics.eisbahn.jp/";
 
 IC.prototype = {
     initialize: function() {
-        this.tabs = {};
+//        this.tabs = {};
         this.setupEventHandler();
         this.setupContextMenus();
         this.establishSession();
@@ -20,7 +20,10 @@ IC.prototype = {
                 this.onSelectionChanged(id);
             }
         }.bind(this));
-        chrome.extension.onRequest.addListener(
+        chrome.tabs.onRemoved.addListener(function(id, removeInfo) {
+            this.deleteTabImageInfo(id);
+        }.bind(this));
+        chrome.extension.onMessage.addListener(
             function(message, sender, sendRequest) {
                 this.onRequest(message, sender.tab, sendRequest);
             }.bind(this)
@@ -71,11 +74,11 @@ IC.prototype = {
                 return image.url;
             });
             if (urls.length > 0) {
-                this.tabs[tab.id] = {
+                this.setTabImageInfo(tab.id, {
                     urls: urls,
                     images: message.images,
                     filtered: filteredImages
-                };
+                });
                 chrome.pageAction.show(tab.id);
                 chrome.pageAction.setTitle({
                     tabId: tab.id,
@@ -83,7 +86,7 @@ IC.prototype = {
                 });
                 this.previewImages(filteredImages, tab);
             } else {
-                delete this.tabs[tab.id];
+                this.deleteTabImageInfo(tab.id);
                 chrome.pageAction.hide(tab.id);
                 chrome.pageAction.setTitle({
                     tabId: tab.id,
@@ -98,7 +101,7 @@ IC.prototype = {
         sendRequest({});
     },
     reloadImages: function(tab) {
-        delete this.tabs[tab.id];
+        this.deleteTabImageInfo(tab.id);
         chrome.pageAction.hide(tab.id);
         this.executeContentScript(tab.id);
     },
@@ -112,11 +115,21 @@ IC.prototype = {
     },
     getSelectedTabImageInfo: function(callback) {
         chrome.tabs.getSelected(null, function(tab) {
-            callback(this.tabs[tab.id], tab.title, tab.url);
+            callback(this.getTabImageInfo(tab.id), tab.title, tab.url);
         }.bind(this));
     },
     getTabImageInfo: function(tabId) {
-        return this.tabs[tabId];
+//        return this.tabs[tabId];
+        var info = localStorage["tab_" + String(tabId)];
+        return info.evalJSON();
+    },
+    setTabImageInfo: function(tabId, info) {
+//        this.tabs[tabId] = info;
+        localStorage["tab_" + String(tabId)] = Object.toJSON(info);
+    },
+    deleteTabImageInfo: function(tabId) {
+//        delete this.tabs[tabId];
+        localStorage.removeItem("tab_" + String(tabId));
     },
     filterUrls: function(images) {
         var filterExts = utils.split(this.getFilterExts(), " ");
@@ -301,7 +314,7 @@ IC.prototype = {
     },
     goToImage: function(url) {
         chrome.tabs.getSelected(null, function(tab) {
-            var images = this.tabs[tab.id].images;
+            var images = this.getTabImageInfo(tab.id).images;
             var pos = -1;
             for (var i = 0; i < images.length; i++) {
                 var image = images[i];

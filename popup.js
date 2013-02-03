@@ -8,7 +8,6 @@ Popup.prototype = {
         this.tabTitle = null;
         this.tabUrl = null;
         this.deletedUrls = new Array();
-        this.bg = chrome.extension.getBackgroundPage();
         window.addEventListener("load", function(evt) {
             this.start();
         }.bind(this));
@@ -17,8 +16,10 @@ Popup.prototype = {
         this.assignMessages();
         this.assignEventHandlers();
 
-        this.bg.ic.getSelectedTabImageInfo(function(info, title, url) {
-            this.onReceiveImageInfo(info, title, url);
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.getSelectedTabImageInfo(function(info, title, url) {
+                this.onReceiveImageInfo(info, title, url);
+            }.bind(this));
         }.bind(this));
 
         this.showAd();
@@ -46,27 +47,29 @@ Popup.prototype = {
         $("btnAuthSdrive").onclick = this.onClickAuthSdrive.bind(this);
         $("btnLocal").onclick = this.onClickLocal.bind(this);
         $("btnSlideShow").onclick = this.onClickSlideShow.bind(this);
-        this.bg.ic.checkDropboxAuthorized({
-            onSuccess: function(req) {
-                var result = req.responseJSON.result;
-                utils.setVisible($("btnDropbox"), result);
-                utils.setVisible($("btnAuthDropbox"), !result);
-            }.bind(this)
-        });
-        this.bg.ic.checkGDriveAuthorized({
-            onSuccess: function(req) {
-                var result = req.responseJSON.result;
-                utils.setVisible($("btnGdrive"), result);
-                utils.setVisible($("btnAuthGdrive"), !result);
-            }.bind(this)
-        });
-        this.bg.ic.checkSDriveAuthorized({
-            onSuccess: function(req) {
-                var result = req.responseJSON.result;
-                utils.setVisible($("btnSdrive"), result);
-                utils.setVisible($("btnAuthSdrive"), !result);
-            }.bind(this)
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.checkDropboxAuthorized({
+                onSuccess: function(req) {
+                    var result = req.responseJSON.result;
+                    utils.setVisible($("btnDropbox"), result);
+                    utils.setVisible($("btnAuthDropbox"), !result);
+                }.bind(this)
+            });
+            bg.ic.checkGDriveAuthorized({
+                onSuccess: function(req) {
+                    var result = req.responseJSON.result;
+                    utils.setVisible($("btnGdrive"), result);
+                    utils.setVisible($("btnAuthGdrive"), !result);
+                }.bind(this)
+            });
+            bg.ic.checkSDriveAuthorized({
+                onSuccess: function(req) {
+                    var result = req.responseJSON.result;
+                    utils.setVisible($("btnSdrive"), result);
+                    utils.setVisible($("btnAuthSdrive"), !result);
+                }.bind(this)
+            });
+        }.bind(this));
         $("btnOption").onclick = this.onClickOption.bind(this);
     },
     onClickOption: function(evt) {
@@ -83,21 +86,24 @@ Popup.prototype = {
         this.tabUrl = url;
         this.showInfo(info);
         this.setImages(info);
-        var script = this.createScript();
-        this.setSaveLink(script, title);
+        this.createScript(function(script) {
+            this.setSaveLink(script, title);
+        }.bind(this));
     },
     showInfo: function(info) {
         $("image_count").innerHTML = info.urls.length;
     },
-    createScript: function() {
-        var template = this.bg.ic.getCommandTemplate();
-        var urls = this.getFinalUrls();
-        var script = "";
-        urls.each(function(url) {
-            var command = template.replace("$url", url);
-            script += command + "\n";
-        });
-        return script;
+    createScript: function(callback) {
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var template = bg.ic.getCommandTemplate();
+            var urls = this.getFinalUrls();
+            var script = "";
+            urls.each(function(url) {
+                var command = template.replace("$url", url);
+                script += command + "\n";
+            });
+            callback(script);
+        }.bind(this));
     },
     getFinalUrls: function() {
         var result = new Array();
@@ -154,7 +160,9 @@ Popup.prototype = {
         div.appendChild(img);
         img.onclick = function(url) {
             return function(evt) {
-                this.bg.ic.goToImage(url);
+                chrome.runtime.getBackgroundPage(function(bg) {
+                    bg.ic.goToImage(url);
+                }.bind(this));
             }.bind(self);
         }.bind(this)(url);
     },
@@ -170,8 +178,9 @@ Popup.prototype = {
                     display: "none"
                 });
                 this.deletedUrls.push(url);
-                var script = this.createScript();
-                this.setSaveLink(script, this.tabTitle);
+                this.createScript(function(script) {
+                    this.setSaveLink(script, this.tabTitle);
+                }.bind(this));
             }.bind(self);
         }.bind(this)(url, parent);
     },
@@ -213,26 +222,28 @@ Popup.prototype = {
             "width=680,height=360");
     },
     setSaveLink: function(script, title) {
-        var blob = new Blob([script], {type: "octet/stream"});
-        var a = document.getElementById("ics_script_link");
-        if (a) {
-            $("command_pane").removeChild(a);
-        }
-        a = document.createElement("a");
-        a.id = "ics_script_link";
-        a.href = window.webkitURL.createObjectURL(blob);
-        var filename = this.bg.ic.getDownloadFilename();
-        filename = filename.replace("$tabname", title);
-        a.download = filename;
-        a.onclick = function(evt) {
-            _gaq.push(['_trackEvent', 'Popup', 'Script']);
-            var message = chrome.i18n.getMessage("popupSavedFile");
-            this.showMessage(message);
-            return true;
-        }.bind(this);
-        var label = chrome.i18n.getMessage("popupBtnSave");
-        a.appendChild(document.createTextNode(label));
-        $("command_pane").appendChild(a);
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var blob = new Blob([script], {type: "octet/stream"});
+            var a = document.getElementById("ics_script_link");
+            if (a) {
+                $("command_pane").removeChild(a);
+            }
+            a = document.createElement("a");
+            a.id = "ics_script_link";
+            a.href = window.webkitURL.createObjectURL(blob);
+            var filename = bg.ic.getDownloadFilename();
+            filename = filename.replace("$tabname", title);
+            a.download = filename;
+            a.onclick = function(evt) {
+                _gaq.push(['_trackEvent', 'Popup', 'Script']);
+                var message = chrome.i18n.getMessage("popupSavedFile");
+                this.showMessage(message);
+                return true;
+            }.bind(this);
+            var label = chrome.i18n.getMessage("popupBtnSave");
+            a.appendChild(document.createTextNode(label));
+            $("command_pane").appendChild(a);
+        }.bind(this));
     },
     showMessage: function(message) {
         $("message").innerHTML = message;
@@ -244,116 +255,130 @@ Popup.prototype = {
         _gaq.push(['_trackEvent', 'Popup', 'Dropbox']);
         Element.setStyle($("btnDropbox"),
                          {display: "none"});
-        this.bg.ic.saveToDropbox(
-            this.tabTitle,
-            this.tabUrl,
-            this.getFinalUrls(),
-            {
-                onSuccess: function(req) {
-                    if (req.responseJSON.result) {
-                        this.showMessage(chrome.i18n.getMessage("popupSavedToDropbox"));
-                    } else {
-                        this.showMessage(chrome.i18n.getMessage("popupSavedToDropboxFail"));
-                    }
-                    Element.setStyle($("btnDropbox"),
-                                     {display: "inline-block"});
-                }.bind(this),
-                onFailure: function(req) {
-                    console.log(req);
-                }.bind(this)
-            }
-        );
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.saveToDropbox(
+                this.tabTitle,
+                this.tabUrl,
+                this.getFinalUrls(),
+                {
+                    onSuccess: function(req) {
+                        if (req.responseJSON.result) {
+                            this.showMessage(chrome.i18n.getMessage("popupSavedToDropbox"));
+                        } else {
+                            this.showMessage(chrome.i18n.getMessage("popupSavedToDropboxFail"));
+                        }
+                        Element.setStyle($("btnDropbox"),
+                                         {display: "inline-block"});
+                    }.bind(this),
+                    onFailure: function(req) {
+                        console.log(req);
+                    }.bind(this)
+                }
+            );
+        }.bind(this));
     },
     onClickGdrive: function(evt) {
         _gaq.push(['_trackEvent', 'Popup', 'GoogleDrive']);
         Element.setStyle($("btnGdrive"),
                          {display: "none"});
-        this.bg.ic.saveToGDrive(
-            this.tabTitle,
-            this.tabUrl,
-            this.getFinalUrls(),
-            {
-                onSuccess: function(req) {
-                    if (req.responseJSON.result) {
-                        this.showMessage(chrome.i18n.getMessage("popupSavedToGDrive"));
-                    } else {
-                        this.showMessage(chrome.i18n.getMessage("popupSavedToGDriveFail"));
-                    }
-                    Element.setStyle($("btnGdrive"),
-                                     {display: "inline-block"});
-                }.bind(this),
-                onFailure: function(req) {
-                    console.log(req);
-                }.bind(this)
-            }
-        );
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.saveToGDrive(
+                this.tabTitle,
+                this.tabUrl,
+                this.getFinalUrls(),
+                {
+                    onSuccess: function(req) {
+                        if (req.responseJSON.result) {
+                            this.showMessage(chrome.i18n.getMessage("popupSavedToGDrive"));
+                        } else {
+                            this.showMessage(chrome.i18n.getMessage("popupSavedToGDriveFail"));
+                        }
+                        Element.setStyle($("btnGdrive"),
+                                         {display: "inline-block"});
+                    }.bind(this),
+                    onFailure: function(req) {
+                        console.log(req);
+                    }.bind(this)
+                }
+            );
+        }.bind(this));
     },
     onClickSdrive: function(evt) {
         _gaq.push(['_trackEvent', 'Popup', 'SkyDrive']);
         Element.setStyle($("btnSdrive"),
                          {display: "none"});
-        this.bg.ic.saveToSDrive(
-            this.tabTitle,
-            this.tabUrl,
-            this.getFinalUrls(),
-            {
-                onSuccess: function(req) {
-                    if (req.responseJSON.result) {
-                        this.showMessage(chrome.i18n.getMessage("popupSavedToSDrive"));
-                    } else {
-                        this.showMessage(chrome.i18n.getMessage("popupSavedToSDriveFail"));
-                    }
-                    Element.setStyle($("btnSdrive"),
-                                     {display: "inline-block"});
-                }.bind(this),
-                onFailure: function(req) {
-                    console.log(req);
-                }.bind(this)
-            }
-        );
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.saveToSDrive(
+                this.tabTitle,
+                this.tabUrl,
+                this.getFinalUrls(),
+                {
+                    onSuccess: function(req) {
+                        if (req.responseJSON.result) {
+                            this.showMessage(chrome.i18n.getMessage("popupSavedToSDrive"));
+                        } else {
+                            this.showMessage(chrome.i18n.getMessage("popupSavedToSDriveFail"));
+                        }
+                        Element.setStyle($("btnSdrive"),
+                                         {display: "inline-block"});
+                    }.bind(this),
+                    onFailure: function(req) {
+                        console.log(req);
+                    }.bind(this)
+                }
+            );
+        }.bind(this));
     },
     onClickAuthDropbox: function(evt) {
-        var url = this.bg.ic.getDropboxAuthUrl();
-        chrome.tabs.create({
-            url: url,
-            selected: true
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var url = bg.ic.getDropboxAuthUrl();
+            chrome.tabs.create({
+                url: url,
+                selected: true
+            });
+        }.bind(this));
     },
     onClickAuthGdrive: function(evt) {
-        var url = this.bg.ic.getGdriveAuthUrl();
-        chrome.tabs.create({
-            url: url,
-            selected: true
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var url = bg.ic.getGdriveAuthUrl();
+            chrome.tabs.create({
+                url: url,
+                selected: true
+            });
+        }.bind(this));
     },
     onClickAuthSdrive: function(evt) {
-        var url = this.bg.ic.getSdriveAuthUrl();
-        chrome.tabs.create({
-            url: url,
-            selected: true
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var url = bg.ic.getSdriveAuthUrl();
+            chrome.tabs.create({
+                url: url,
+                selected: true
+            });
+        }.bind(this));
     },
     onClickLocal: function(evt) {
         _gaq.push(['_trackEvent', 'Popup', 'DownloadLocal']);
         Element.setStyle($("btnLocal"),
                          {display: "none"});
-        this.bg.ic.saveToLocal(
-            this.tabTitle,
-            this.tabUrl,
-            this.getFinalUrls(),
-            {
-                onSuccess: function(req) {
-                    if (req.responseJSON.result) {
-                        this.bg.ic.downloadLocal(this.getFinalUrls());
-                    }
-                    Element.setStyle($("btnLocal"),
-                                     {display: "inline-block"});
-                }.bind(this),
-                onFailure: function(req) {
-                    console.log(req);
-                }.bind(this)
-            }
-        );
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.saveToLocal(
+                this.tabTitle,
+                this.tabUrl,
+                this.getFinalUrls(),
+                {
+                    onSuccess: function(req) {
+                        if (req.responseJSON.result) {
+                            bg.ic.downloadLocal(this.getFinalUrls());
+                        }
+                        Element.setStyle($("btnLocal"),
+                                         {display: "inline-block"});
+                    }.bind(this),
+                    onFailure: function(req) {
+                        console.log(req);
+                    }.bind(this)
+                }
+            );
+        }.bind(this));
     },
     showAd: function() {
         $("ad_pane").innerHTML = "";
@@ -365,9 +390,11 @@ Popup.prototype = {
     },
     onClickSlideShow: function(evt) {
         _gaq.push(['_trackEvent', 'Popup', 'SlideShow']);
-        this.bg.ic.startSlideShow(function() {
-            window.close();
-        });
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.startSlideShow(function() {
+                window.close();
+            });
+        }.bind(this));
     }
 };
 
