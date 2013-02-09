@@ -9,12 +9,17 @@ IC.prototype = {
 //        this.tabs = {};
         this.setupEventHandler();
         this.setupContextMenus();
-        this.establishSession();
     },
     getServerUrl: function() {
         return IC.SERVER_URL;
     },
     setupEventHandler: function() {
+        chrome.runtime.onStartup.addListener(function() {
+            this.establishSession();
+        }.bind(this));
+        chrome.runtime.onInstalled.addListener(function() {
+            this.establishSession();
+        }.bind(this));
         chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab) {
             if (changeInfo.status == "complete") {
                 this.onSelectionChanged(id);
