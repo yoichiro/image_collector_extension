@@ -161,6 +161,12 @@
     "optPreviewBottomRight": {
         "message": "Bottom right"
     },
+    "optBookmark": {
+        "message": "Bookmark"
+    },
+    "optDontCreatePageBookmark": {
+        "message": "Don't create a bookmark of the Web page, when the images saved."
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },

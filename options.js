@@ -76,7 +76,9 @@ Options.prototype = {
             "auth_sdrive": "optAuthSDrive",
             "cancel_sdrive": "optCancelSDrive",
             "optPreview": "optPreview",
-            "optPreviewLocation": "optPreviewLocation"
+            "optPreviewLocation": "optPreviewLocation",
+            "optBookmark": "optBookmark",
+            "optDontCreatePageBookmark": "optDontCreatePageBookmark"
           };
         utils.setMessageResources(hash);
     },
@@ -109,6 +111,8 @@ Options.prototype = {
             this.onClickCancelSDrive.bind(this);
         $("preview_position").onchange =
             this.onChangePreviewPosition.bind(this);
+        $("dont_create_page_bookmark").onclick =
+            this.onClickDontCreatePageBookmark.bind(this);
     },
     restoreConfigurations: function() {
         chrome.runtime.getBackgroundPage(function(bg) {
@@ -121,6 +125,7 @@ Options.prototype = {
             $("download_filename").value = bg.ic.getDownloadFilename();
             $("without_creating_folder").checked = bg.ic.isWithoutCreatingFolder();
             $("preview_position").value = bg.ic.getPreviewPosition();
+            $("dont_create_page_bookmark").checked = bg.ic.isDontCreatePageBookmark();
         });
     },
     checkDropboxAuthorized: function() {
@@ -280,6 +285,9 @@ Options.prototype = {
     },
     onClickWithoutCreatingFolder: function() {
         this.changeCheckboxConfiguration("without_creating_folder");
+    },
+    onClickDontCreatePageBookmark: function() {
+        this.changeCheckboxConfiguration("dont_create_page_bookmark");
     },
     loadMonitor: function() {
         chrome.runtime.getBackgroundPage(function(bg) {

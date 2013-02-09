@@ -161,6 +161,12 @@
     "optPreviewBottomRight": {
         "message": "右下"
     },
+    "optBookmark": {
+        "message": "ブックマーク"
+    },
+    "optDontCreatePageBookmark": {
+        "message": "画像を保存したときにそのWebページをブックマークしない"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },

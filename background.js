@@ -6,9 +6,9 @@ IC.SERVER_URL = "http://ics.eisbahn.jp/";
 
 IC.prototype = {
     initialize: function() {
-//        this.tabs = {};
         this.setupEventHandler();
         this.setupContextMenus();
+        this.setupBookmark();
     },
     getServerUrl: function() {
         return IC.SERVER_URL;
@@ -33,19 +33,25 @@ IC.prototype = {
                 this.onRequest(message, sender.tab, sendRequest);
             }.bind(this)
         );
+        chrome.contextMenus.onClicked.addListener(function(info, tab) {
+            this.onClickContextMenu(info, tab);
+        }.bind(this));
     },
     setupContextMenus: function() {
         chrome.contextMenus.create({
+            id: "menuReloadImages",
             type: "normal",
             title: chrome.i18n.getMessage("menuReloadImages"),
-            contexts: ["page"],
-            onclick: function(info, tab) {
-                this.reloadImages(tab);
-            }.bind(this)
+            contexts: ["page"]
         });
     },
+    onClickContextMenu: function(info, tab) {
+        if (info.menuItemId == "menuReloadImages") {
+            this.reloadImages(tab);
+        }
+    },
     establishSession: function() {
-        var url = IC.SERVER_URL + "ajax/create_session";
+        var url = this.getServerUrl() + "ajax/create_session";
         var token = this.getSessionToken();
         var params = {
             has_token: token != undefined
@@ -124,16 +130,13 @@ IC.prototype = {
         }.bind(this));
     },
     getTabImageInfo: function(tabId) {
-//        return this.tabs[tabId];
         var info = localStorage["tab_" + String(tabId)];
         return info.evalJSON();
     },
     setTabImageInfo: function(tabId, info) {
-//        this.tabs[tabId] = info;
         localStorage["tab_" + String(tabId)] = Object.toJSON(info);
     },
     deleteTabImageInfo: function(tabId) {
-//        delete this.tabs[tabId];
         localStorage.removeItem("tab_" + String(tabId));
     },
     filterUrls: function(images) {
@@ -210,7 +213,7 @@ IC.prototype = {
     },
     checkServiceAuthorized: function(name, callbacks) {
         var token = this.getSessionToken();
-        var url = IC.SERVER_URL + "ajax/is_valid_" + name;
+        var url = this.getServerUrl() + "ajax/is_valid_" + name;
         new Ajax.Request(url, {
             method: "post",
             parameters: {
@@ -237,7 +240,7 @@ IC.prototype = {
         this.saveToService("local", title, pageUrl, urls, callbacks);
     },
     saveToService: function(name, title, pageUrl, urls, callbacks) {
-        var url = IC.SERVER_URL + "ajax/save_to_" + name;
+        var url = this.getServerUrl() + "ajax/save_to_" + name;
         new Ajax.Request(url, {
             method: "post",
             parameters: {
@@ -248,6 +251,7 @@ IC.prototype = {
                 create_dir: !this.isWithoutCreatingFolder()
             },
             onSuccess: function(req) {
+                this.createPageBookmark(title, pageUrl);
                 callbacks.onSuccess(req);
             }.bind(this),
             onFailure: function(req) {
@@ -265,7 +269,7 @@ IC.prototype = {
         this.cancelService("sdrive", callbacks);
     },
     cancelService: function(name, callbacks) {
-        var url = IC.SERVER_URL + "ajax/cancel_" + name;
+        var url = this.getServerUrl() + "ajax/cancel_" + name;
         new Ajax.Request(url, {
             method: "post",
             parameters: {
@@ -300,8 +304,11 @@ IC.prototype = {
     isWithoutCreatingFolder: function() {
         return Boolean(localStorage["without_creating_folder"]);
     },
+    isDontCreatePageBookmark: function() {
+        return Boolean(localStorage["dont_create_page_bookmark"]);
+    },
     loadMonitor: function(callbacks) {
-        var url = IC.SERVER_URL + "monitor";
+        var url = this.getServerUrl() + "monitor";
         new Ajax.Request(url, {
             method: "get",
             onSuccess: function(req) {
@@ -357,6 +364,42 @@ IC.prototype = {
             }, function(tab) {
                 callback();
             });
+        });
+    },
+    setupBookmark: function() {
+        if (this.isDontCreatePageBookmark()) {
+            return;
+        }
+        var bookmarkId = this.getExtensionBookmarkId();
+        if (!bookmarkId) {
+            this.createExtensionBookmark();
+        } else {
+            chrome.bookmarks.get(bookmarkId, function(result) {
+                if (!result) {
+                    this.createExtensionBookmark();
+                }
+            }.bind(this));
+        }
+    },
+    createExtensionBookmark: function() {
+        chrome.bookmarks.create({
+            title: "Image Collector extension"
+        }, function(result) {
+            localStorage["extension_bookmark_id"] = result.id;
+        });
+    },
+    getExtensionBookmarkId: function() {
+        return localStorage["extension_bookmark_id"];
+    },
+    createPageBookmark: function(title, url) {
+        if (this.isDontCreatePageBookmark()) {
+            return;
+        }
+        var parentId = this.getExtensionBookmarkId();
+        chrome.bookmarks.create({
+            parentId: parentId,
+            title: title,
+            url: url
         });
     }
 };
