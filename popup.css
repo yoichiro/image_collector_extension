@@ -1,8 +1,9 @@
 body {
     width: 500px;
-    height: 370px;
+    height: 380px;
     font-family: "Verdana","Arial",sans-serif;
     font-size: 14px;
+    background-color: skyblue;
 }
 
 div.left_pane {
@@ -19,8 +20,17 @@ div.pane_header div {
     float: left;
 }
 
+table {
+    width: 100%;
+}
+
 div.pane_header img {
     float: left;
+}
+
+td.image_table {
+    background-color: white;
+    width: 300px;
 }
 
 div.image_pane {
@@ -33,7 +43,6 @@ div.image_pane {
     height: 260px;
     margin-bottom: 5px;
     overflow: auto;
-    border: 1px solid gray;
 }
 
 #images img.content {
@@ -53,7 +62,7 @@ div.image_pane {
 div.copyright {
     position: absolute;
     right: 5px;
-    bottom: 3px;
+    bottom: 8px;
     color: gray;
     font-size: 10px;
 }
@@ -75,6 +84,10 @@ div.info_pane div {
 div.info_pane img {
     float: right;
     cursor: pointer;
+}
+
+td.function_table {
+    background-color: white;
 }
 
 div.service_pane {
@@ -117,11 +130,12 @@ div.image_function img.goto {
 
 div#ad_pane {
     position: absolute;
-    bottom: 20px;
-    width: 100%;
+    left: 13px;
+    bottom: 25px;
+    width: 490px;
     height: 60px;
-    text-align: center;
     override: hidden;
+    text-align: center;
 }
 
 div#ad_pane iframe {
