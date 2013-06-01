@@ -70,7 +70,6 @@ Options.prototype = {
             "optStat": "optStat",
             "optStatRemainingJob": "optStatRemainingJob",
             "optStatPageCount": "optStatPageCount",
-            "optStatImageCount": "optStatImageCount",
             "sdrive_authorized": "optSDriveAuthorized",
             "sdrive_unauthorized": "optSDriveUnauthorized",
             "auth_sdrive": "optAuthSDrive",
@@ -298,8 +297,6 @@ Options.prototype = {
                         this.addFigure(result.job_count);
                     $("stat_page_count").innerText =
                         this.addFigure(result.page_count);
-                    $("stat_image_count").innerText =
-                        this.addFigure(result.image_count);
                 }.bind(this)
             });
         }.bind(this));
