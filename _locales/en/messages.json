@@ -167,6 +167,18 @@
     "optDontCreatePageBookmark": {
         "message": "Don't create a bookmark of the Web page, when the images saved."
     },
+    "optShortcut": {
+        "message": "Shortcut"
+    },
+    "optShortcutDownloadService1": {
+        "message": "Download images into"
+    },
+    "optShortcutDownloadService2": {
+        "message": "at pressing the key bind."
+    },
+    "optShortcutDownloadDescription": {
+        "message": "(mac: Command+Shift+S, other: Ctrl+Shift+S)"
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },
@@ -226,5 +238,16 @@
     },
     "menuReloadImages": {
         "message": "Reload images"
+    },
+    "notifyShortcutDownloadServiceTitle": {
+        "message": "Registration completed"
+    },
+    "notifyShortcutDownloadServiceBody": {
+        "message": "Images will go into $VALUE$",
+        "placeholders": {
+            "value" : {
+                "content": "$1"
+            }
+        }
     }
 }

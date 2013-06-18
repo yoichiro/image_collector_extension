@@ -36,6 +36,11 @@ IC.prototype = {
         chrome.contextMenus.onClicked.addListener(function(info, tab) {
             this.onClickContextMenu(info, tab);
         }.bind(this));
+        chrome.commands.onCommand.addListener(function(command) {
+            if (command == "download_images") {
+                this.onCommandDownloadImages();
+            }
+        }.bind(this));
     },
     setupContextMenus: function() {
         chrome.contextMenus.create({
@@ -131,7 +136,11 @@ IC.prototype = {
     },
     getTabImageInfo: function(tabId) {
         var info = localStorage["tab_" + String(tabId)];
-        return info.evalJSON();
+        if (info) {
+            return info.evalJSON();
+        } else {
+            return null;
+        }
     },
     setTabImageInfo: function(tabId, info) {
         localStorage["tab_" + String(tabId)] = Object.toJSON(info);
@@ -327,18 +336,20 @@ IC.prototype = {
     goToImage: function(url) {
         chrome.tabs.getSelected(null, function(tab) {
             var images = this.getTabImageInfo(tab.id).images;
-            var pos = -1;
-            for (var i = 0; i < images.length; i++) {
-                var image = images[i];
-                if (image.url == url) {
-                    pos = image.pos;
-                    break;
+            if (images) {
+                var pos = -1;
+                for (var i = 0; i < images.length; i++) {
+                    var image = images[i];
+                    if (image.url == url) {
+                        pos = image.pos;
+                        break;
+                    }
                 }
+                chrome.tabs.sendMessage(tab.id, {
+                    operation: "go_to_image",
+                    pos: pos
+                });
             }
-            chrome.tabs.sendMessage(tab.id, {
-                operation: "go_to_image",
-                pos: pos
-            });
         }.bind(this));
     },
     previewImages: function(images, tab) {
@@ -401,6 +412,79 @@ IC.prototype = {
             title: title,
             url: url
         });
+    },
+    onCommandDownloadImages: function() {
+        if (!this.isUseShortcutDownloadService()) {
+            return;
+        }
+        this.getSelectedTabImageInfo(function(info, title, url) {
+            if (info && info.urls.length > 0) {
+                var serviceName = this.getShortcutDownloadService();
+                this.checkServiceAuthorized(serviceName, {
+                    onSuccess: function(req) {
+                        var result = req.responseJSON.result;
+                        if (result) {
+                            this.downloadImagesByShortcut(serviceName, title, url, info);
+                        } else {
+                            console.log(req);
+                        }
+                    }.bind(this),
+                    onFailure: function(req) {
+                        console.log(req);
+                    }.bind(this)
+                });
+            }
+        }.bind(this));
+    },
+    downloadImagesByShortcut: function(serviceName, title, url, info) {
+        this.saveToService(serviceName, title, url, info.urls, {
+            onSuccess: function(req) {
+                if (serviceName == "local") {
+                    this.downloadLocal(info.urls);
+                } else {
+                    this.showNotification(
+                        chrome.i18n.getMessage("notifyShortcutDownloadServiceTitle"),
+                        chrome.i18n.getMessage(
+                            "notifyShortcutDownloadServiceBody",
+                            this.getRealServiceName(serviceName)));
+                }
+            }.bind(this),
+            onFailure: function(req) {
+                console.log(req);
+            }.bind(this)
+        });
+    },
+    getRealServiceName: function(serviceName) {
+        if (serviceName == "local") {
+            return "Local HDD";
+        } else if (serviceName == "dropbox") {
+            return "Dropbox";
+        } else if (serviceName == "gdrive") {
+            return "Google Drive";
+        } else if (serviceName == "sdrive") {
+            return "SkyDrive";
+        } else {
+            return "";
+        }
+    },
+    getShortcutDownloadService: function() {
+        return utils.getOptionValue("shortcut_download_service", "local");
+    },
+    isUseShortcutDownloadService: function() {
+        return Boolean(localStorage["use_shortcut_download_service"]);
+    },
+    showNotification: function(message, subMessage) {
+        var notification = webkitNotifications.createNotification(
+            "./icon48.png",
+            message,
+            subMessage
+        );
+        notification.show();
+        notification.ondisplay = function() {
+            setTimeout(function() {
+                notification.cancel();
+            }, 5000);
+        };
     }
 };
 

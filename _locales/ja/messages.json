@@ -167,6 +167,18 @@
     "optDontCreatePageBookmark": {
         "message": "画像を保存したときにそのWebページをブックマークしない"
     },
+    "optShortcut": {
+        "message": "ショートカット"
+    },
+    "optShortcutDownloadService1": {
+        "message": "キーバインドを押したときに"
+    },
+    "optShortcutDownloadService2": {
+        "message": "に画像をダウンロードする。"
+    },
+    "optShortcutDownloadDescription": {
+        "message": "(mac: Command+Shift+S, その他: Ctrl+Shift+S)"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },
@@ -226,5 +238,16 @@
     },
     "menuReloadImages": {
         "message": "画像の再読み込み"
+    },
+    "notifyShortcutDownloadServiceTitle": {
+        "message": "登録完了"
+    },
+    "notifyShortcutDownloadServiceBody": {
+        "message": "画像は $VALUE$ に入ります",
+        "placeholders": {
+            "value" : {
+                "content": "$1"
+            }
+        }
     }
 }

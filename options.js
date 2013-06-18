@@ -77,7 +77,11 @@ Options.prototype = {
             "optPreview": "optPreview",
             "optPreviewLocation": "optPreviewLocation",
             "optBookmark": "optBookmark",
-            "optDontCreatePageBookmark": "optDontCreatePageBookmark"
+            "optDontCreatePageBookmark": "optDontCreatePageBookmark",
+            "optShortcut": "optShortcut",
+            "optShortcutDownloadService1": "optShortcutDownloadService1",
+            "optShortcutDownloadService2": "optShortcutDownloadService2",
+            "optShortcutDownloadDescription": "optShortcutDownloadDescription"
           };
         utils.setMessageResources(hash);
     },
@@ -112,6 +116,10 @@ Options.prototype = {
             this.onChangePreviewPosition.bind(this);
         $("dont_create_page_bookmark").onclick =
             this.onClickDontCreatePageBookmark.bind(this);
+        $("shortcut_download_service").onchange =
+            this.onChangeShortcutDownloadService.bind(this);
+        $("use_shortcut_download_service").onclick =
+            this.onClickUseShortcutDownloadService.bind(this);
     },
     restoreConfigurations: function() {
         chrome.runtime.getBackgroundPage(function(bg) {
@@ -125,6 +133,9 @@ Options.prototype = {
             $("without_creating_folder").checked = bg.ic.isWithoutCreatingFolder();
             $("preview_position").value = bg.ic.getPreviewPosition();
             $("dont_create_page_bookmark").checked = bg.ic.isDontCreatePageBookmark();
+            $("shortcut_download_service").value = bg.ic.getShortcutDownloadService();
+            $("use_shortcut_download_service").checked = bg.ic.isUseShortcutDownloadService();
+            $("shortcut_download_service").disabled = !bg.ic.isUseShortcutDownloadService();
         });
     },
     checkDropboxAuthorized: function() {
@@ -309,6 +320,36 @@ Options.prototype = {
     onChangePreviewPosition: function() {
         var value = $("preview_position").value;
         localStorage["preview_position"] = value;
+    },
+    onChangeShortcutDownloadService: function() {
+        var value = $("shortcut_download_service").value;
+        localStorage["shortcut_download_service"] = value;
+    },
+    onClickUseShortcutDownloadService: function() {
+        var checked = $("use_shortcut_download_service").checked;
+        if (checked) {
+            chrome.permissions.request({
+                permissions: [
+                    "notifications"
+                ]
+            }, function(granted) {
+                if (granted) {
+                    $("shortcut_download_service").disabled = false;
+                } else {
+                    $("use_shortcut_download_service").checked = false;
+                }
+                this.changeCheckboxConfiguration("use_shortcut_download_service");
+            }.bind(this));
+        } else {
+            chrome.permissions.remove({
+                permissions: [
+                    "notifications"
+                ]
+            }, function(removed) {
+                $("shortcut_download_service").disabled = true;
+                this.changeCheckboxConfiguration("use_shortcut_download_service");
+            }.bind(this));
+        }
     }
 };
 
