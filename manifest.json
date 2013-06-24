@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Image collector extension",
     "description": "__MSG_extDescription__",
-    "version": "6.3.0",
+    "version": "6.4.0",
     "icons": {
         "48": "icon48.png",
         "128": "icon128.png"
@@ -35,6 +35,13 @@
                 "mac": "Command+Shift+S"
             },
             "description": "Download images on the current page"
+        },
+        "slideshow_images": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+P",
+                "mac": "Command+Shift+P"
+            },
+            "description": "Start slideshow for images on the current page"
         }
     }
 }

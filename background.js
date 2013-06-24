@@ -39,6 +39,8 @@ IC.prototype = {
         chrome.commands.onCommand.addListener(function(command) {
             if (command == "download_images") {
                 this.onCommandDownloadImages();
+            } else if (command == "slideshow_images") {
+                this.onCommandSlideshowImages();
             }
         }.bind(this));
     },
@@ -485,6 +487,13 @@ IC.prototype = {
                 notification.cancel();
             }, 5000);
         };
+    },
+    onCommandSlideshowImages: function() {
+        this.getSelectedTabImageInfo(function(info, title, url) {
+            if (info && info.urls.length > 0) {
+                this.startSlideShow(function() {});
+            }
+        }.bind(this));
     }
 };
 
