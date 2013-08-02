@@ -383,26 +383,50 @@ IC.prototype = {
         if (this.isDontCreatePageBookmark()) {
             return;
         }
-        var bookmarkId = this.getExtensionBookmarkId();
-        if (!bookmarkId) {
+        this.clearBookmarkFolders(function() {
             this.createExtensionBookmark();
-        } else {
-            chrome.bookmarks.get(bookmarkId, function(result) {
-                if (!result) {
-                    this.createExtensionBookmark();
-                }
-            }.bind(this));
-        }
+        }.bind(this));
     },
-    createExtensionBookmark: function() {
-        chrome.bookmarks.create({
-            title: "Image Collector extension"
-        }, function(result) {
-            localStorage["extension_bookmark_id"] = result.id;
+    clearBookmarkFolders: function(callback) {
+        this.traverseBookmarkFolders(function(folder) {
+            if (folder.title == "Image Collector extension") {
+                if (folder.children.length == 0) {
+                    chrome.bookmarks.remove(folder.id);
+                }
+            }
+        }.bind(this), function() {
+            callback();
         });
     },
-    getExtensionBookmarkId: function() {
-        return localStorage["extension_bookmark_id"];
+    traverseBookmarkFolders: function(proc, callback) {
+        chrome.bookmarks.getSubTree("2", function(results) {
+            if (results.length > 0) {
+                results[0].children.each(function(result) {
+                    proc(result);
+                });
+            }
+            callback.call();
+        });
+    },
+    createExtensionBookmark: function() {
+        var exists = false;
+        var extensionBookmarkId = null;
+        this.traverseBookmarkFolders(function(folder) {
+            if (folder.title == "Image Collector extension") {
+                exists = true;
+                extensionBookmarkId = folder.id;
+            }
+        }.bind(this), function() {
+            if (exists) {
+                localStorage["extension_bookmark_id"] = extensionBookmarkId;
+            } else {
+                chrome.bookmarks.create({
+                    title: "Image Collector extension"
+                }, function(result) {
+                    localStorage["extension_bookmark_id"] = result.id;
+                });
+            }
+        }.bind(this));
     },
     createPageBookmark: function(title, url) {
         if (this.isDontCreatePageBookmark()) {
