@@ -428,6 +428,9 @@ IC.prototype = {
             }
         }.bind(this));
     },
+    getExtensionBookmarkId: function() {
+        return localStorage["extension_bookmark_id"];
+    },
     createPageBookmark: function(title, url) {
         if (this.isDontCreatePageBookmark()) {
             return;
