@@ -179,6 +179,12 @@
     "optShortcutDownloadDescription": {
         "message": "(mac: Command+Shift+S, other: Ctrl+Shift+S)"
     },
+    "optHoverZoom": {
+        "message": "Hover zoom"
+    },
+    "optDontHoverZoom": {
+        "message": "Don't zoom the image, when you place your mouse cursor over the image while pressing down the Shift key."
+    },
     "popupCopied": {
         "message": "The script was copied to the clipboard."
     },

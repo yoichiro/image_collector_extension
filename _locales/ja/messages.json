@@ -179,6 +179,12 @@
     "optShortcutDownloadDescription": {
         "message": "(mac: Command+Shift+S, その他: Ctrl+Shift+S)"
     },
+    "optHoverZoom": {
+        "message": "ホバーズーム"
+    },
+    "optDontHoverZoom": {
+        "message": "Shiftを押しながら画像の上にマウスカーソルを置いた時に、画像をズーム表示しない。"
+    },
     "popupCopied": {
         "message": "クリップボードにスクリプトをコピーしました。"
     },

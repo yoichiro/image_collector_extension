@@ -81,7 +81,9 @@ Options.prototype = {
             "optShortcut": "optShortcut",
             "optShortcutDownloadService1": "optShortcutDownloadService1",
             "optShortcutDownloadService2": "optShortcutDownloadService2",
-            "optShortcutDownloadDescription": "optShortcutDownloadDescription"
+            "optShortcutDownloadDescription": "optShortcutDownloadDescription",
+            "optHoverZoom": "optHoverZoom",
+            "optDontHoverZoom": "optDontHoverZoom"
           };
         utils.setMessageResources(hash);
     },
@@ -120,6 +122,8 @@ Options.prototype = {
             this.onChangeShortcutDownloadService.bind(this);
         $("use_shortcut_download_service").onclick =
             this.onClickUseShortcutDownloadService.bind(this);
+        $("dont_hover_zoom").onclick =
+            this.onClickDontHoverZoom.bind(this);
     },
     restoreConfigurations: function() {
         chrome.runtime.getBackgroundPage(function(bg) {
@@ -136,6 +140,7 @@ Options.prototype = {
             $("shortcut_download_service").value = bg.ic.getShortcutDownloadService();
             $("use_shortcut_download_service").checked = bg.ic.isUseShortcutDownloadService();
             $("shortcut_download_service").disabled = !bg.ic.isUseShortcutDownloadService();
+            $("dont_hover_zoom").checked = bg.ic.isDontHoverZoom();
         });
     },
     checkDropboxAuthorized: function() {
@@ -298,6 +303,9 @@ Options.prototype = {
     },
     onClickDontCreatePageBookmark: function() {
         this.changeCheckboxConfiguration("dont_create_page_bookmark");
+    },
+    onClickDontHoverZoom: function() {
+        this.changeCheckboxConfiguration("dont_hover_zoom");
     },
     loadMonitor: function() {
         chrome.runtime.getBackgroundPage(function(bg) {

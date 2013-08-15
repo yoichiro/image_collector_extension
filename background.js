@@ -102,6 +102,7 @@ IC.prototype = {
                     tabId: tab.id,
                     title: String(urls.length) + " images"
                 });
+                this.sendTargetImages(urls, tab);
                 this.previewImages(filteredImages, tab);
             } else {
                 this.deleteTabImageInfo(tab.id);
@@ -110,6 +111,7 @@ IC.prototype = {
                     tabId: tab.id,
                     title: ""
                 });
+                this.sendTargetImages(new Array(), tab);
             }
         } else if (message.type == "disable_button") {
             chrome.pageAction.hide(message.tabId);
@@ -118,10 +120,19 @@ IC.prototype = {
         }
         sendRequest({});
     },
+    sendTargetImages: function(urls, tab) {
+        chrome.tabs.sendMessage(tab.id, {
+            operation: "store_target_images",
+            urls: urls,
+            isHoverZoom: !this.isDontHoverZoom()
+        });
+    },
     reloadImages: function(tab) {
         this.deleteTabImageInfo(tab.id);
         chrome.pageAction.hide(tab.id);
-        this.executeContentScript(tab.id);
+        chrome.tabs.sendMessage(tab.id, {
+            operation: "reload_images"
+        });
     },
     onSelectionChanged: function(tabId) {
         this.executeContentScript(tabId);
@@ -317,6 +328,9 @@ IC.prototype = {
     },
     isDontCreatePageBookmark: function() {
         return Boolean(localStorage["dont_create_page_bookmark"]);
+    },
+    isDontHoverZoom: function() {
+        return Boolean(localStorage["dont_hover_zoom"]);
     },
     loadMonitor: function(callbacks) {
         var url = this.getServerUrl() + "monitor";

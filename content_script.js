@@ -5,11 +5,11 @@ if (typeof CS == "undefined") {
 
     CS.prototype = {
         initialize: function() {
+            this.targetImageUrls = new Array();
+            this.isHoverZoom = false;
         },
         start: function() {
-            var self = this;
-            var images = this.getImages();
-            this.sendImagesMessage(images);
+            this.fetchAndSendImages();
             chrome.extension.onMessage.addListener(
                 this.hitch(function(message, sender) {
                     this.onReceiveMessage(message, sender);
@@ -43,7 +43,16 @@ if (typeof CS == "undefined") {
                 var position = message.position;
                 var tabId = message.tabId;
                 this.previewImages(images, position, tabId);
+            } else if (operation == "reload_images") {
+                this.fetchAndSendImages();
+            } else if (operation == "store_target_images") {
+                this.targetImageUrls = message.urls;
+                this.isHoverZoom = message.isHoverZoom;
             }
+        },
+        fetchAndSendImages: function() {
+            var images = this.getImages();
+            this.sendImagesMessage(images);
         },
         getImages: function() {
             var imgs = document.getElementsByTagName("img");
@@ -56,6 +65,7 @@ if (typeof CS == "undefined") {
                 var width = Math.max(imgs[i].width, imgs[i].naturalWidth);
                 var height = Math.max(imgs[i].height, imgs[i].naturalHeight);
                 var top = imgs[i].getBoundingClientRect().top;
+                var url = imgSrc;
                 var img = {
                     tag: "img",
                     url: imgSrc,
@@ -77,11 +87,61 @@ if (typeof CS == "undefined") {
                             pos:top
                         });
                         img.hasLink = true;
+                        url = href;
                     }
                 }
                 images.push(img);
+                var eventHandlingTarget = img.hasLink ? parent : imgs[i];
+                eventHandlingTarget.addEventListener(
+                    "mouseover",
+                    (function(self, imageUrl) {
+                        return function(evt) {
+                            if (evt.shiftKey) {
+                                self.onMouseOverImg(imageUrl);
+                            }
+                        };
+                    })(this, url),
+                    false);
             }
             return images;
+        },
+        onMouseOverImg: function(url) {
+            if (this.isHoverZoom && this.isTargetImage(url)) {
+                var img = document.getElementById("ics_hover_zoom");
+                if (img) {
+                    document.body.removeChild(img);
+                }
+                var clientWidth = document.documentElement.clientWidth;
+                var clientHeight = document.documentElement.clientHeight;
+                img = document.createElement("img");
+                img.id = "ics_hover_zoom";
+                img.style.position = "fixed";
+                img.style.border = "5px solid darkgray";
+                img.addEventListener("load", this.hitch(function(evt) {
+                    var imageWidth = Math.max(img.width, img.naturalWidth);
+                    var imageHeight = Math.max(img.height, img.naturalHeight);
+                    var rateWidth = clientWidth / imageWidth;
+                    var rateHeight = clientHeight / imageHeight;
+                    var rate = Math.min(rateWidth, rateHeight) * 0.95;
+                    img.width = imageWidth * rate;
+                    img.height = imageHeight * rate;
+                    img.style.top = String((clientHeight - img.height) / 2) + "px";
+                    img.style.left = String((clientWidth - img.width) / 2) + "px";
+                }), false);
+                img.src = url;
+                document.body.appendChild(img);
+                img.addEventListener("click", function(evt) {
+                    document.body.removeChild(img);
+                }, false);
+            }
+        },
+        isTargetImage: function(url) {
+            for (var i = 0; i < this.targetImageUrls.length; i++) {
+                if (this.targetImageUrls[i] == url) {
+                    return true;
+                }
+            }
+            return false;
         },
         sendImagesMessage: function(images) {
             var message = {
