@@ -1,6 +1,6 @@
 {
     "extDescription": {
-        "message": "This extension provides you to retrieve images on the page you're seeing now quickly. Images cannot only be downloaded to your PC directly, but they also can be uploaded to Dropbox, Google Drive and SkyDrive directly and quickly."
+        "message": "This extension provides you to download images on the page you visit quickly to your PC, Dropbox, Google Drive and SkyDrive."
     },
     "optCommand": {
         "message": "Command"
@@ -184,6 +184,9 @@
     },
     "optDontHoverZoom": {
         "message": "Don't zoom the image, when you place your mouse cursor over the image while pressing down the Shift key."
+    },
+    "optWelcome": {
+        "message": "Thank you for installing this extension. You can adjust some configurations to fetch images on a Web page you visit. The button to download will be shown on the address bar, when there are images which match your condition in the Web page."
     },
     "popupCopied": {
         "message": "The script was copied to the clipboard."

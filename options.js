@@ -83,7 +83,8 @@ Options.prototype = {
             "optShortcutDownloadService2": "optShortcutDownloadService2",
             "optShortcutDownloadDescription": "optShortcutDownloadDescription",
             "optHoverZoom": "optHoverZoom",
-            "optDontHoverZoom": "optDontHoverZoom"
+            "optDontHoverZoom": "optDontHoverZoom",
+            "optWelcome": "optWelcome"
           };
         utils.setMessageResources(hash);
     },

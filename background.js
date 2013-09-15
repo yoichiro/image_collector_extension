@@ -17,8 +17,17 @@ IC.prototype = {
         chrome.runtime.onStartup.addListener(function() {
             this.establishSession();
         }.bind(this));
-        chrome.runtime.onInstalled.addListener(function() {
-            this.establishSession();
+        chrome.runtime.onInstalled.addListener(function(details) {
+            this.establishSession(function() {
+                if (details.reason == "install"
+                   || (details.reason == "update"
+                       && details.previousVersion == "6.5.0")) {
+                    var url = chrome.extension.getURL("options.html");
+                    chrome.tabs.create({
+                        url: url
+                    });
+                }
+            }.bind(this));
         }.bind(this));
         chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab) {
             if (changeInfo.status == "complete") {
@@ -57,7 +66,7 @@ IC.prototype = {
             this.reloadImages(tab);
         }
     },
-    establishSession: function() {
+    establishSession: function(callback) {
         var url = this.getServerUrl() + "ajax/create_session";
         var token = this.getSessionToken();
         var params = {
@@ -71,6 +80,9 @@ IC.prototype = {
             parameters: params,
             onSuccess: function(req) {
                 this.onReceiveEstablishSession(req);
+                if (callback) {
+                    callback.call();
+                }
             }.bind(this),
             onFailure: function(req) {
                 console.log(req);
