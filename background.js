@@ -110,6 +110,14 @@ IC.prototype = {
                     filtered: filteredImages
                 });
                 chrome.pageAction.show(tab.id);
+                chrome.pageAction.setIcon({
+                    tabId: tab.id,
+                    path: "icon19.png"
+                });
+                chrome.pageAction.setPopup({
+                    tabId: tab.id,
+                    popup: "popup.html"
+                });
                 chrome.pageAction.setTitle({
                     tabId: tab.id,
                     title: String(urls.length) + " images"
@@ -118,10 +126,21 @@ IC.prototype = {
                 this.previewImages(filteredImages, tab);
             } else {
                 this.deleteTabImageInfo(tab.id);
-                chrome.pageAction.hide(tab.id);
+//                chrome.pageAction.hide(tab.id);
+
+                chrome.pageAction.show(tab.id);
+                chrome.pageAction.setPopup({
+                    tabId: tab.id,
+                    popup: "popup_no_images.html"
+                });
+                chrome.pageAction.setIcon({
+                    tabId: tab.id,
+                    path: "icon19_gray.png"
+                });
+
                 chrome.pageAction.setTitle({
                     tabId: tab.id,
-                    title: ""
+                    title: "No images"
                 });
                 this.sendTargetImages(new Array(), tab);
             }
