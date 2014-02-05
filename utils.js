@@ -26,6 +26,16 @@ Utils.prototype = {
         } else {
             return new Array();
         }
+    },
+    requestDownloadsPermission: function(callback) {
+        chrome.permissions.request({
+            permissions: ["downloads"]
+        }, function(granted) {
+            console.log("Request downloads permissions: " + granted);
+            if (granted) {
+                callback();
+            }
+        }.bind(this));
     }
 };
 

@@ -357,27 +357,29 @@ Popup.prototype = {
         }.bind(this));
     },
     onClickLocal: function(evt) {
-        _gaq.push(['_trackEvent', 'Popup', 'DownloadLocal']);
-        Element.setStyle($("btnLocal"),
-                         {display: "none"});
-        chrome.runtime.getBackgroundPage(function(bg) {
-            bg.ic.saveToLocal(
-                this.tabTitle,
-                this.tabUrl,
-                this.getFinalUrls(),
-                {
-                    onSuccess: function(req) {
-                        if (req.responseJSON.result) {
-                            bg.ic.downloadLocal(this.getFinalUrls());
-                        }
-                        Element.setStyle($("btnLocal"),
-                                         {display: "inline-block"});
-                    }.bind(this),
-                    onFailure: function(req) {
-                        console.log(req);
-                    }.bind(this)
-                }
-            );
+        utils.requestDownloadsPermission(function() {
+            _gaq.push(['_trackEvent', 'Popup', 'DownloadLocal']);
+            Element.setStyle($("btnLocal"),
+                             {display: "none"});
+            chrome.runtime.getBackgroundPage(function(bg) {
+                bg.ic.saveToLocal(
+                    this.tabTitle,
+                    this.tabUrl,
+                    this.getFinalUrls(),
+                    {
+                        onSuccess: function(req) {
+                            if (req.responseJSON.result) {
+                                bg.ic.downloadLocal(this.getFinalUrls());
+                            }
+                            Element.setStyle($("btnLocal"),
+                                             {display: "inline-block"});
+                        }.bind(this),
+                        onFailure: function(req) {
+                            console.log(req);
+                        }.bind(this)
+                    }
+                );
+            }.bind(this));
         }.bind(this));
     },
     showAd: function() {

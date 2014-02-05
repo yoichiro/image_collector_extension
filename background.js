@@ -46,6 +46,7 @@ IC.prototype = {
             this.onClickContextMenu(info, tab);
         }.bind(this));
         chrome.commands.onCommand.addListener(function(command) {
+            console.log(command);
             if (command == "download_images") {
                 this.onCommandDownloadImages();
             } else if (command == "slideshow_images") {
@@ -373,11 +374,14 @@ IC.prototype = {
         });
     },
     downloadLocal: function(images) {
-        chrome.tabs.getSelected(null, function(tab) {
-            chrome.tabs.sendMessage(tab.id, {
-                operation: "download_local",
-                images: images
-            });
+        images.each(function(url) {
+            chrome.downloads.download({
+                url: url,
+                conflictAction: "uniquify",
+                method: "GET"
+            }, function(downloadId) {
+                console.log(downloadId);
+            }.bind(this));
         }.bind(this));
     },
     goToImage: function(url) {
@@ -491,23 +495,30 @@ IC.prototype = {
         if (!this.isUseShortcutDownloadService()) {
             return;
         }
-        this.getSelectedTabImageInfo(function(info, title, url) {
-            if (info && info.urls.length > 0) {
-                var serviceName = this.getShortcutDownloadService();
-                this.checkServiceAuthorized(serviceName, {
-                    onSuccess: function(req) {
-                        var result = req.responseJSON.result;
-                        if (result) {
-                            this.downloadImagesByShortcut(serviceName, title, url, info);
-                        } else {
-                            console.log(req);
-                        }
-                    }.bind(this),
-                    onFailure: function(req) {
-                        console.log(req);
-                    }.bind(this)
-                });
-            }
+        utils.requestDownloadsPermission(function() {
+            this.getSelectedTabImageInfo(function(info, title, url) {
+                if (info && info.urls.length > 0) {
+                    var serviceName = this.getShortcutDownloadService();
+                    if (serviceName == "local") {
+                        this.downloadImagesByShortcut(serviceName, title, url, info);
+                    } else {
+                        this.checkServiceAuthorized(serviceName, {
+                            onSuccess: function(req) {
+                                var result = req.responseJSON.result;
+                                if (result) {
+                                    this.downloadImagesByShortcut(
+                                        serviceName, title, url, info);
+                                } else {
+                                    console.log(req);
+                                }
+                            }.bind(this),
+                            onFailure: function(req) {
+                                console.log(req);
+                            }.bind(this)
+                        });
+                    }
+                }
+            }.bind(this));
         }.bind(this));
     },
     downloadImagesByShortcut: function(serviceName, title, url, info) {
