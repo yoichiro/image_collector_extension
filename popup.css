@@ -143,3 +143,27 @@ div#ad_pane iframe {
     height: 100%;
     border: 0px;
 }
+
+#btnDropbox {
+    display: none;
+}
+
+#btnAuthDropbox {
+    display: none;
+}
+
+#btnGdrive {
+    display: none;
+}
+
+#btnAuthGdrive {
+    display: none;
+}
+
+#btnSdrive {
+    display: none;
+}
+
+#btnAuthSdrive {
+    display: none;
+}
