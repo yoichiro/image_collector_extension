@@ -1,8 +1,9 @@
 {
     "manifest_version": 2,
     "name": "Image collector extension",
+    "short_name": "Ice",
     "description": "__MSG_extDescription__",
-    "version": "7.0.0",
+    "version": "7.0.1",
     "icons": {
         "48": "icon48.png",
         "128": "icon128.png"
