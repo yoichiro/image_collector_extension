@@ -122,6 +122,18 @@
     "optCancelSDrive": {
         "message": "Disconnect"
     },
+    "optPicasaAuthorized": {
+        "message": "Authorized."
+    },
+    "optPicasaUnauthorized": {
+        "message": "Unauthorized."
+    },
+    "optAuthPicasa": {
+        "message": "Connect"
+    },
+    "optCancelPicasa": {
+        "message": "Disconnect"
+    },
     "optWithoutCreatingFolder": {
         "message": "Not creating a directory of each Web page."
     },
@@ -238,6 +250,18 @@
     },
     "popupSavedToSdriveFail": {
         "message": "The reservation of the registeration task failed."
+    },
+    "popupBtnPicasa": {
+        "message": "Upload images"
+    },
+    "popupBtnAuthPicasa": {
+        "message": "Connect to Picasa"
+    },
+    "popupSavedToPicasa": {
+        "message": "Registered the reservation task."
+    },
+    "popupSavedToPicasaFail": {
+        "message": "The reservation of the registration task failed."
     },
     "popupGoToPageTop": {
         "message": "Go to page top"

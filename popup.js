@@ -34,7 +34,9 @@ Popup.prototype = {
             "btnSdrive": "popupBtnSdrive",
             "btnAuthSdrive": "popupBtnAuthSdrive",
             "btnLocal": "popupBtnSave",
-            "btnSlideShow": "popupBtnSlideShow"
+            "btnSlideShow": "popupBtnSlideShow",
+            "btnPicasa": "popupBtnPicasa",
+            "btnAuthPicasa": "popupBtnAuthPicasa"
         };
         utils.setMessageResources(hash);
     },
@@ -43,6 +45,8 @@ Popup.prototype = {
         $("btnAuthDropbox").onclick = this.onClickAuthDropbox.bind(this);
         $("btnGdrive").onclick = this.onClickGdrive.bind(this);
         $("btnAuthGdrive").onclick = this.onClickAuthGdrive.bind(this);
+        $("btnPicasa").onclick = this.onClickPicasa.bind(this);
+        $("btnAuthPicasa").onclick = this.onClickAuthPicasa.bind(this);
         $("btnSdrive").onclick = this.onClickSdrive.bind(this);
         $("btnAuthSdrive").onclick = this.onClickAuthSdrive.bind(this);
         $("btnLocal").onclick = this.onClickLocal.bind(this);
@@ -67,6 +71,13 @@ Popup.prototype = {
                     var result = req.responseJSON.result;
                     utils.setVisible($("btnSdrive"), result);
                     utils.setVisible($("btnAuthSdrive"), !result);
+                }.bind(this)
+            });
+            bg.ic.checkPicasaAuthorized({
+                onSuccess: function(req) {
+                    var result = req.responseJSON.result;
+                    utils.setVisible($("btnPicasa"), result);
+                    utils.setVisible($("btnAuthPicasa"), !result);
                 }.bind(this)
             });
         }.bind(this));
@@ -303,6 +314,32 @@ Popup.prototype = {
             );
         }.bind(this));
     },
+    onClickPicasa: function(evt) {
+        _gaq.push(['_trackEvent', 'Popup', 'Picasa']);
+        Element.setStyle($("btnPicasa"),
+                         {display: "none"});
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.saveToPicasa(
+                this.tabTitle,
+                this.tabUrl,
+                this.getFinalUrls(),
+                {
+                    onSuccess: function(req) {
+                        if (req.responseJSON.result) {
+                            this.showMessage(chrome.i18n.getMessage("popupSavedToPicasa"));
+                        } else {
+                            this.showMessage(chrome.i18n.getMessage("popupSavedToPicasaFail"));
+                        }
+                        Element.setStyle($("btnPicasa"),
+                                         {display: "inline-block"});
+                    }.bind(this),
+                    onFailure: function(req) {
+                        console.log(req);
+                    }.bind(this)
+                }
+            );
+        }.bind(this));
+    },
     onClickSdrive: function(evt) {
         _gaq.push(['_trackEvent', 'Popup', 'SkyDrive']);
         Element.setStyle($("btnSdrive"),
@@ -341,6 +378,15 @@ Popup.prototype = {
     onClickAuthGdrive: function(evt) {
         chrome.runtime.getBackgroundPage(function(bg) {
             var url = bg.ic.getGdriveAuthUrl();
+            chrome.tabs.create({
+                url: url,
+                selected: true
+            });
+        }.bind(this));
+    },
+    onClickAuthPicasa: function(evt) {
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var url = bg.ic.getPicasaAuthUrl();
             chrome.tabs.create({
                 url: url,
                 selected: true

@@ -265,6 +265,9 @@ IC.prototype = {
     checkSDriveAuthorized: function(callbacks) {
         this.checkServiceAuthorized("sdrive", callbacks);
     },
+    checkPicasaAuthorized: function(callbacks) {
+        this.checkServiceAuthorized("picasa", callbacks);
+    },
     checkServiceAuthorized: function(name, callbacks) {
         var token = this.getSessionToken();
         var url = this.getServerUrl() + "ajax/is_valid_" + name;
@@ -286,6 +289,9 @@ IC.prototype = {
     },
     saveToGDrive: function(title, pageUrl, urls, callbacks) {
         this.saveToService("gdrive", title, pageUrl, urls, callbacks);
+    },
+    saveToPicasa: function(title, pageUrl, urls, callbacks) {
+        this.saveToService("picasa", title, pageUrl, urls, callbacks);
     },
     saveToSDrive: function(title, pageUrl, urls, callbacks) {
         this.saveToService("sdrive", title, pageUrl, urls, callbacks);
@@ -322,6 +328,9 @@ IC.prototype = {
     cancelSDrive: function(callbacks) {
         this.cancelService("sdrive", callbacks);
     },
+    cancelPicasa: function(callbacks) {
+        this.cancelService("picasa", callbacks);
+    },
     cancelService: function(name, callbacks) {
         var url = this.getServerUrl() + "ajax/cancel_" + name;
         new Ajax.Request(url, {
@@ -342,6 +351,9 @@ IC.prototype = {
     },
     getGdriveAuthUrl: function() {
         return this.getServiceAuthUrl("gdrive");
+    },
+    getPicasaAuthUrl: function() {
+        return this.getServiceAuthUrl("picasa");
     },
     getSdriveAuthUrl: function() {
         return this.getServiceAuthUrl("sdrive");
@@ -546,6 +558,8 @@ IC.prototype = {
             return "Dropbox";
         } else if (serviceName == "gdrive") {
             return "Google Drive";
+        } else if (serviceName == "picasa") {
+            return "Picasa";
         } else if (serviceName == "sdrive") {
             return "SkyDrive";
         } else {

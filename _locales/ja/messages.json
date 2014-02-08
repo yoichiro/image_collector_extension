@@ -122,6 +122,18 @@
     "optCancelSDrive": {
         "message": "解除"
     },
+    "optPicasaAuthorized": {
+        "message": "認可されています。"
+    },
+    "optPicasaUnauthorized": {
+        "message": "認可されていません。"
+    },
+    "optAuthPicasa": {
+        "message": "接続"
+    },
+    "optCancelPicasa": {
+        "message": "解除"
+    },
     "optWithoutCreatingFolder": {
         "message": "Webページごとにディレクトリを作成しない。"
     },
@@ -237,6 +249,18 @@
         "message": "登録タスクが予約されました。"
     },
     "popupSavedToSdriveFail": {
+        "message": "登録タスクの予約に失敗しました。"
+    },
+    "popupBtnPicasa": {
+        "message": "アップロードする"
+    },
+    "popupBtnAuthPicasa": {
+        "message": "Picasaに接続する"
+    },
+    "popupSavedToPicasa": {
+        "message": "登録タスクが予約されました。"
+    },
+    "popupSavedToPicasaFail": {
         "message": "登録タスクの予約に失敗しました。"
     },
     "popupGoToPageTop": {

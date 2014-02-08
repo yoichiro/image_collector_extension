@@ -16,6 +16,7 @@ Options.prototype = {
         this.checkDropboxAuthorized();
         this.checkGDriveAuthorized();
         this.checkSDriveAuthorized();
+        this.checkPicasaAuthorized();
         this.loadMonitor();
     },
     setupUIs: function() {
@@ -84,7 +85,11 @@ Options.prototype = {
             "optShortcutDownloadDescription": "optShortcutDownloadDescription",
             "optHoverZoom": "optHoverZoom",
             "optDontHoverZoom": "optDontHoverZoom",
-            "optWelcome": "optWelcome"
+            "optWelcome": "optWelcome",
+            "picasa_authorized": "optPicasaAuthorized",
+            "picasa_unauthorized": "optPicasaUnauthorized",
+            "auth_picasa": "optAuthPicasa",
+            "cancel_picasa": "optCancelPicasa"
           };
         utils.setMessageResources(hash);
     },
@@ -125,6 +130,10 @@ Options.prototype = {
             this.onClickUseShortcutDownloadService.bind(this);
         $("dont_hover_zoom").onclick =
             this.onClickDontHoverZoom.bind(this);
+        $("auth_picasa").onclick =
+            this.onClickAuthPicasa.bind(this);
+        $("cancel_picasa").onclick =
+            this.onClickCancelPicasa.bind(this);
     },
     restoreConfigurations: function() {
         chrome.runtime.getBackgroundPage(function(bg) {
@@ -179,6 +188,19 @@ Options.prototype = {
                     utils.setVisible($("sdrive_unauthorized"), !result);
                     utils.setVisible($("auth_sdrive"), !result);
                     utils.setVisible($("cancel_sdrive"), result);
+                }.bind(this)
+            });
+        }.bind(this));
+    },
+    checkPicasaAuthorized: function() {
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.checkPicasaAuthorized({
+                onSuccess: function(req) {
+                    var result = req.responseJSON.result;
+                    utils.setVisible($("picasa_authorized"), result);
+                    utils.setVisible($("picasa_unauthorized"), !result);
+                    utils.setVisible($("auth_picasa"), !result);
+                    utils.setVisible($("cancel_picasa"), result);
                 }.bind(this)
             });
         }.bind(this));
@@ -265,6 +287,18 @@ Options.prototype = {
             });
         }.bind(this));
     },
+    onClickCancelPicasa: function(evt) {
+        chrome.runtime.getBackgroundPage(function(bg) {
+            bg.ic.cancelPicasa({
+                onSuccess: function(req) {
+                    this.checkPicasaAuthorized();
+                }.bind(this),
+                onFailure: function(req) {
+                    this.checkPicasaAuthorized();
+                }.bind(this)
+            });
+        }.bind(this));
+    },
     onClickCancelSDrive: function(evt) {
         chrome.runtime.getBackgroundPage(function(bg) {
             bg.ic.cancelSDrive({
@@ -283,6 +317,17 @@ Options.prototype = {
             var optionUrl = chrome.extension.getURL("options.html");
             var url =
                 bg.ic.getServerUrl() + "auth_gdrive?"
+                + "token=" + token
+                + "&callback=" + encodeURIComponent(optionUrl);
+            location.href = url;
+        });
+    },
+    onClickAuthPicasa: function(evt) {
+        chrome.runtime.getBackgroundPage(function(bg) {
+            var token = bg.ic.getSessionToken();
+            var optionUrl = chrome.extension.getURL("options.html");
+            var url =
+                bg.ic.getServerUrl() + "auth_picasa?"
                 + "token=" + token
                 + "&callback=" + encodeURIComponent(optionUrl);
             location.href = url;
